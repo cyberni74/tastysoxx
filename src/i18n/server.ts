@@ -1,14 +1,10 @@
 import "server-only";
-import { cookies, headers } from "next/headers";
-import { DEFAULT_LOCALE, LOCALE_COOKIE, isLocale, type Locale } from "./config";
+import { DEFAULT_LOCALE, type Locale } from "./config";
 import { translator, type Dict, type Messages } from "./define";
 
+/** The site is German-only; English dictionaries are kept but no longer served. */
 export async function getLocale(): Promise<Locale> {
-  const c = (await cookies()).get(LOCALE_COOKIE)?.value;
-  if (isLocale(c)) return c;
-  const accept = (await headers()).get("accept-language") ?? "";
-  const first = accept.split(",")[0]?.trim().slice(0, 2).toLowerCase();
-  return first === "en" ? "en" : DEFAULT_LOCALE;
+  return DEFAULT_LOCALE;
 }
 
 /** Server Components / Actions: `const { t, locale } = await getT(messages)`. */

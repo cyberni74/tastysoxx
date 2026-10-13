@@ -3,7 +3,6 @@ import { DEPARTMENTS } from "@/lib/constants";
 import { getT } from "@/i18n/server";
 import { common } from "@/i18n/messages/common";
 import { Logo } from "./Logo";
-import { LanguageSwitch } from "./LanguageSwitch";
 
 const HELP = [
   { href: "/hilfe/kaufen-und-verkaufen", de: "So funktioniert Kaufen und Verkaufen", en: "How buying and selling works" },
@@ -20,7 +19,6 @@ export async function Footer() {
         <div className="grid content-start gap-3">
           <Logo size="lg" />
           <p className="max-w-[36ch] text-sm text-muted">{t("footer.tagline")}</p>
-          <LanguageSwitch className="w-fit" />
         </div>
         <nav aria-label={t("nav.marketplace")}>
           <h4 className="eyebrow mb-3">{t("nav.marketplace")}</h4>

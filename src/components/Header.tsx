@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCart } from "./CartProvider";
 import { Logo } from "./Logo";
-import { LanguageSwitch } from "./LanguageSwitch";
 import { useT } from "@/i18n/client";
 import { common } from "@/i18n/messages/common";
 import type { Profile } from "@/lib/types";
@@ -44,7 +43,6 @@ export function Header({ profile }: { profile: Profile | null }) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
           <input id="header-search" value={q} onChange={(e) => setQ(e.target.value)} type="search" placeholder={t("nav.search")} className="w-full min-w-0 bg-transparent outline-none" aria-label={t("nav.searchLabel")} />
         </form>
-        <div className="hidden sm:block"><LanguageSwitch /></div>
         <Link href={profile ? "/konto" : "/anmelden"} className="hidden size-10 place-items-center rounded-full border border-line bg-surface sm:grid" aria-label={profile ? t("nav.account") : t("nav.login")}>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
         </Link>
@@ -61,7 +59,6 @@ export function Header({ profile }: { profile: Profile | null }) {
           <Link href={profile ? "/konto" : "/anmelden"} className="py-2.5 font-medium">{profile ? t("nav.account") : t("nav.login")}</Link>
           {profile?.role === "seller" && <Link href="/dashboard" className="py-2.5 font-medium">{t("nav.dashboard")}</Link>}
           {profile && <Link href="/nachrichten" className="py-2.5 font-medium">{t("nav.messages")}</Link>}
-          <div className="py-2.5" onClick={(e) => e.stopPropagation()}><LanguageSwitch /></div>
         </nav>
       )}
     </header>
