@@ -5,7 +5,7 @@ import { info } from "@/i18n/messages/info";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.notFound") };
+  return { title: t("meta.notFound"), robots: { index: false } };
 }
 
 export default async function NotFound() {
@@ -16,7 +16,7 @@ export default async function NotFound() {
       <h1 className="text-3xl font-extrabold">{t("nf.title")}</h1>
       <p className="text-muted">{t("nf.text")}</p>
       <div className="flex flex-wrap justify-center gap-2">
-        <Link href="/shop" className="btn-primary">{t("nf.shop")}</Link>
+        <Link href="/marktplatz" className="btn-primary">{t("nf.shop")}</Link>
         <Link href="/" className="btn-ghost">{t("nf.home")}</Link>
       </div>
     </div>

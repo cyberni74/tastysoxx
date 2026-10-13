@@ -6,12 +6,15 @@ import type { Profile, SellerStats } from "@/lib/types";
 import { SellerCard } from "@/components/SellerCard";
 import { Empty, SetupNotice } from "@/components/Bits";
 import { getT } from "@/i18n/server";
+import { hasParams, pageMeta } from "@/lib/seo";
 import { browse } from "@/i18n/messages/browse";
 
 export const dynamic = "force-dynamic";
-export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getT(browse);
-  return { title: t("sellers.metaTitle") };
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const [sp, { t }] = await Promise.all([searchParams, getT(browse)]);
+  return pageMeta({ title: t("sellers.metaTitle"), description: t("sellers.metaDesc"), path: "/verkaeufer", noindex: hasParams(sp) });
 }
 
 const str = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
@@ -24,7 +27,7 @@ function href(verifiziert: boolean, sort: string) {
   return qs ? `/verkaeufer?${qs}` : "/verkaeufer";
 }
 
-export default async function VerkaeuferPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+export default async function VerkaeuferPage({ searchParams }: Props) {
   const sp = await searchParams;
   const verifiziert = str(sp.verifiziert) === "1";
   const sort = str(sp.sort) === "bewertungen" ? "bewertungen" : "aktiv";

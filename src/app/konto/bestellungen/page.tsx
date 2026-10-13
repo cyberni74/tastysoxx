@@ -70,7 +70,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
         <div className="mt-6">
           <Empty>
             {t("orders.empty")}{" "}
-            <Link href="/shop" className="font-semibold text-accent hover:underline">{t("orders.toShop")}</Link>
+            <Link href="/marktplatz" className="font-semibold text-accent hover:underline">{t("orders.toShop")}</Link>
           </Empty>
         </div>
       )}

@@ -28,11 +28,16 @@ export const seller = defineMessages({
     "form.removePhoto": "Foto {n} entfernen", "form.moveLeft": "Nach vorne", "form.moveRight": "Nach hinten",
     "form.uploading": "Lädt…", "form.addPhoto": "Foto",
     "form.photoHint": "JPG, PNG oder WebP, max. 5 MB pro Bild. Das erste Bild ist das Titelbild. Keine Gesichter oder persönlichen Daten zeigen.",
-    "form.details": "Details", "form.title": "Titel", "form.titlePh": "z. B. Weiße Sneakersocken nach dem Training",
+    "form.details": "Details", "form.title": "Titel", "form.titlePh": "z. B. Schwarzer Spitzenslip, 2 Tage getragen",
     "form.desc": "Beschreibung", "form.descPh": "Wie wurden sie getragen? Besonderheiten? Extras auf Wunsch?",
     "form.category": "Kategorie", "form.material": "Material", "form.choose": "Bitte wählen",
     "form.wearDays": "Tragedauer (Tage)", "form.price": "Preis in €",
     "form.priceHint": "5,00 € bis 500,00 €. Versand (4,90 €) zahlt die Käuferin bzw. der Käufer.",
+    "form.department": "Bereich", "form.chooseDeptFirst": "Erst Bereich wählen", "form.optional": "(optional)",
+    "form.sizePh": "z. B. {hint}", "form.colorNone": "Keine Angabe",
+    "v.department": "Bitte einen Bereich wählen (Socken, Slips oder BHs)", "v.categoryDept": "Die Kategorie passt nicht zum Bereich",
+    "v.sizeMax": "Größe: höchstens 12 Zeichen", "v.sizeRequired": "Bitte eine Größe angeben",
+    "v.color": "Bitte eine gültige Farbe wählen", "v.condition": "Bitte einen Zustand wählen",
     "form.save": "Änderungen speichern", "form.create": "Artikel einstellen", "form.saving": "Speichert…", "form.cancel": "Abbrechen",
 
     "up.noDb": "Upload nicht möglich: Datenbank nicht verbunden.",
@@ -81,7 +86,7 @@ export const seller = defineMessages({
 
     "admin.eyebrow": "Admin", "admin.title": "Verkäuferinnen verifizieren",
     "admin.summary": "{n} Verkäuferinnen · {open} noch nicht verifiziert", "admin.empty": "Noch keine Verkäuferinnen registriert.",
-    "admin.since": "seit {d}", "admin.verify": "Verifizieren", "admin.unverify": "Verifizierung entziehen",
+    "admin.since": "seit {d}", "admin.reports": "Meldungen", "admin.verify": "Verifizieren", "admin.unverify": "Verifizierung entziehen",
   },
   en: {
     "meta.dashboard": "Dashboard", "meta.new": "New listing", "meta.edit": "Edit listing",
@@ -109,11 +114,16 @@ export const seller = defineMessages({
     "form.removePhoto": "Remove photo {n}", "form.moveLeft": "Move forward", "form.moveRight": "Move back",
     "form.uploading": "Uploading…", "form.addPhoto": "Photo",
     "form.photoHint": "JPG, PNG or WebP, max. 5 MB per image. The first image is the cover. Don't show faces or personal details.",
-    "form.details": "Details", "form.title": "Title", "form.titlePh": "e.g. White ankle socks after a workout",
+    "form.details": "Details", "form.title": "Title", "form.titlePh": "e.g. Black lace panties, worn 2 days",
     "form.desc": "Description", "form.descPh": "How were they worn? Anything special? Extras on request?",
     "form.category": "Category", "form.material": "Material", "form.choose": "Please choose",
     "form.wearDays": "Days worn", "form.price": "Price in €",
     "form.priceHint": "€5.00 to €500.00. Shipping (€4.90) is paid by the buyer.",
+    "form.department": "Department", "form.chooseDeptFirst": "Choose a department first", "form.optional": "(optional)",
+    "form.sizePh": "e.g. {hint}", "form.colorNone": "Not specified",
+    "v.department": "Please choose a department (socks, panties or bras)", "v.categoryDept": "The category doesn't match the department",
+    "v.sizeMax": "Size: at most 12 characters", "v.sizeRequired": "Please enter a size",
+    "v.color": "Please choose a valid colour", "v.condition": "Please choose a condition",
     "form.save": "Save changes", "form.create": "Publish listing", "form.saving": "Saving…", "form.cancel": "Cancel",
 
     "up.noDb": "Upload not possible: database not connected.",
@@ -162,6 +172,6 @@ export const seller = defineMessages({
 
     "admin.eyebrow": "Admin", "admin.title": "Verify sellers",
     "admin.summary": "{n} sellers · {open} not yet verified", "admin.empty": "No sellers registered yet.",
-    "admin.since": "since {d}", "admin.verify": "Verify", "admin.unverify": "Remove verification",
+    "admin.since": "since {d}", "admin.reports": "Reports", "admin.verify": "Verify", "admin.unverify": "Remove verification",
   },
 });

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { getSession } from "@/lib/supabase/server";
@@ -10,6 +11,7 @@ import { startConversation } from "@/app/nachrichten/actions";
 import { date } from "@/lib/format";
 import { BUILDS } from "@/lib/constants";
 import { getT } from "@/i18n/server";
+import { pageMeta } from "@/lib/seo";
 import { browse } from "@/i18n/messages/browse";
 import { common } from "@/i18n/messages/common";
 
@@ -25,7 +27,13 @@ const loadSeller = cache(async (username: string) => {
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
   const [{ seller }, { t }] = await Promise.all([loadSeller(decodeURIComponent(username)), getT(browse)]);
-  return { title: seller ? t("profile.metaTitle", { name: seller.username }) : t("profile.metaFallback") };
+  const path = `/verkaeufer/${encodeURIComponent(seller?.username ?? decodeURIComponent(username))}`;
+  if (!seller) return pageMeta({ title: t("profile.metaFallback"), path, noindex: true });
+  return pageMeta({
+    title: t("profile.metaTitle", { name: seller.username }),
+    description: t("profile.metaDesc", { name: seller.username }),
+    path,
+  });
 }
 
 export default async function SellerProfilePage({ params }: { params: Promise<{ username: string }> }) {
@@ -91,9 +99,15 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
           {seller.bio && <p className="max-w-2xl whitespace-pre-line break-words text-muted">{seller.bio}</p>}
         </div>
         {!isSelf && (
-          <form action={startConversation.bind(null, seller.id, undefined)} className="shrink-0">
-            <button type="submit" className="btn-primary w-full sm:w-auto">{t("profile.message")}</button>
-          </form>
+          <div className="flex shrink-0 flex-col items-stretch gap-2 sm:items-end">
+            <form action={startConversation.bind(null, seller.id, undefined)}>
+              <button type="submit" className="btn-primary w-full sm:w-auto">{t("profile.message")}</button>
+            </form>
+            <Link href={`/melden?profil=${encodeURIComponent(seller.username)}`} rel="nofollow"
+              className="text-center text-sm text-muted underline-offset-2 hover:text-danger hover:underline">
+              ⚑ {t("profile.report")}
+            </Link>
+          </div>
         )}
       </header>
 

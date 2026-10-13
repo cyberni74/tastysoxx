@@ -41,6 +41,6 @@ export async function placeOrder(_prev: CheckoutState, formData: FormData): Prom
   if (error) return { error: tc(dbErrorKey(error.message)) };
 
   revalidatePath("/konto/bestellungen");
-  revalidatePath("/shop");
+  revalidatePath("/marktplatz");
   return { ok: true };
 }

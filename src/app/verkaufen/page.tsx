@@ -2,18 +2,21 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
+import { common } from "@/i18n/messages/common";
+import { DEPARTMENTS } from "@/lib/constants";
+import { pageMeta } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.sell"), description: t("meta.sellDesc") };
+  return pageMeta({ title: t("meta.sell"), description: t("meta.sellDesc"), path: "/verkaufen" });
 }
 
-const WHY = [1, 2, 3] as const;
 const STEPS = [1, 2, 3, 4] as const;
-const TIPS = [1, 2, 3, 4, 5] as const;
+const RULES = [1, 2, 3, 4, 5] as const;
 
 export default async function SellPage() {
   const { t } = await getT(info);
+  const { t: tc } = await getT(common);
   return (
     <div className="wrap grid gap-14 py-10">
       <section className="grid max-w-2xl gap-4">
@@ -22,18 +25,19 @@ export default async function SellPage() {
         <p className="text-lg text-muted">{t("sell.lead")}</p>
         <div className="flex flex-wrap gap-2">
           <Link href="/registrieren" className="btn-primary">{t("sell.cta")}</Link>
-          <Link href="/faq" className="btn-ghost">{t("sell.faq")}</Link>
+          <Link href="/hilfe" className="btn-ghost">{t("sell.help")}</Link>
         </div>
       </section>
 
       <section className="grid gap-4">
-        <h2 className="text-2xl font-bold">{t("sell.whyTitle")}</h2>
+        <h2 className="text-2xl font-bold">{t("sell.deptTitle")}</h2>
         <div className="grid gap-3 sm:grid-cols-3">
-          {WHY.map((n) => (
-            <div key={n} className="card p-5">
-              <h3 className="text-lg font-bold">{t(`sell.why${n}.t`)}</h3>
-              <p className="mt-1 text-sm text-muted">{t(`sell.why${n}.d`)}</p>
-            </div>
+          {DEPARTMENTS.map((d) => (
+            <Link key={d.id} href={d.sellPath} className="card grid content-start gap-2 p-5 transition hover:border-accent">
+              <h3 className="text-xl font-bold">{tc(`deptShort.${d.id}`)}</h3>
+              <p className="text-sm text-muted">{t(`sell.dept.${d.id}`)}</p>
+              <span className="text-sm font-semibold text-accent">{t("sell.deptMore")}</span>
+            </Link>
           ))}
         </div>
       </section>
@@ -59,12 +63,13 @@ export default async function SellPage() {
           <p className="rounded-xl bg-accent-soft p-3 text-sm">{t("sell.feesNote")}</p>
         </div>
         <div className="card grid content-start gap-3 p-6">
-          <h2 className="text-2xl font-bold">{t("sell.tipsTitle")}</h2>
+          <h2 className="text-2xl font-bold">{t("sell.rulesTitle")}</h2>
           <ul className="grid gap-2 text-sm">
-            {TIPS.map((n) => (
-              <li key={n} className="flex gap-2"><span className="text-ok" aria-hidden>✓</span><span>{t(`sell.tip${n}`)}</span></li>
+            {RULES.map((n) => (
+              <li key={n} className="flex gap-2"><span className="text-ok" aria-hidden>✓</span><span>{t(`sell.rule${n}`)}</span></li>
             ))}
           </ul>
+          <Link href="/hilfe/angebotsregeln" className="text-sm font-semibold text-accent underline">{t("sell.rulesLink")}</Link>
         </div>
       </section>
 

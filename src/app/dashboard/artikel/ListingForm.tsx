@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useActionState, useRef, useState } from "react";
+import { startTransition, useActionState, useRef, useState } from "react";
 import { getBrowserClient } from "@/lib/supabase/client";
-import { CATEGORIES, MATERIALS } from "@/lib/constants";
-import type { Listing } from "@/lib/types";
+import { COLORS, CONDITIONS, DEPARTMENTS, MATERIALS, SIZE_HINTS, categoriesOf } from "@/lib/constants";
+import type { Department, Listing } from "@/lib/types";
 import type { FormState } from "./actions";
 import { useLocale, useT } from "@/i18n/client";
 import { seller } from "@/i18n/messages/seller";
@@ -21,6 +21,9 @@ export function ListingForm({ action, userId, listing }: { action: Action; userI
   const tc = useT(common);
   const locale = useLocale();
   const [state, formAction, pending] = useActionState(action, {});
+  const [dept, setDept] = useState<Department | "">(listing?.department ?? "");
+  const [category, setCategory] = useState<string>(listing?.category ?? "");
+  const sizeRequired = dept === "slips" || dept === "bhs";
   const [images, setImages] = useState<string[]>(listing?.images ?? []);
   const [uploading, setUploading] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -77,7 +80,13 @@ export function ListingForm({ action, userId, listing }: { action: Action; userI
   const defaultPrice = listing ? (listing.price_cents / 100).toFixed(2).replace(".", locale === "en" ? "." : ",") : "";
 
   return (
-    <form action={formAction} className="grid gap-5">
+    <form className="grid gap-5"
+      onSubmit={(e) => {
+        // submit manually so React doesn't reset the fields when validation fails
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        startTransition(() => formAction(fd));
+      }}>
       <input type="hidden" name="images" value={JSON.stringify(images)} />
 
       <section className="card grid gap-3 p-4 sm:p-5">
@@ -125,19 +134,51 @@ export function ListingForm({ action, userId, listing }: { action: Action; userI
           <textarea name="description" className="input min-h-32" maxLength={2000} defaultValue={listing?.description}
             placeholder={t("form.descPh")} />
         </label>
+        <fieldset className="grid gap-2">
+          <legend className="mb-1 text-sm font-semibold">{t("form.department")}</legend>
+          <input type="hidden" name="department" value={dept} />
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={t("form.department")}>
+            {DEPARTMENTS.map((d) => (
+              <button key={d.id} type="button" role="radio" aria-checked={dept === d.id}
+                onClick={() => { if (dept !== d.id) { setDept(d.id); setCategory(""); } }}
+                className={`rounded-xl border px-2 py-2.5 text-sm font-semibold transition ${dept === d.id ? "border-accent bg-accent-soft text-fg" : "border-line bg-surface hover:border-accent"}`}>
+                {tc(`deptShort.${d.id}`)}
+              </button>
+            ))}
+          </div>
+        </fieldset>
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="label">
             {t("form.category")}
-            <select name="category" className="input" required defaultValue={listing?.category ?? ""}>
-              <option value="" disabled>{t("form.choose")}</option>
-              {CATEGORIES.map((c) => <option key={c.id} value={c.id}>{tc(`cat.${c.id}`)}</option>)}
+            <select name="category" className="input" required disabled={!dept} value={category}
+              onChange={(e) => setCategory(e.target.value)}>
+              <option value="" disabled>{dept ? t("form.choose") : t("form.chooseDeptFirst")}</option>
+              {dept && categoriesOf(dept).map((c) => <option key={c.id} value={c.id}>{tc(`cat.${c.id}`)}</option>)}
             </select>
           </label>
           <label className="label">
-            {t("form.material")}
+            {sizeRequired ? tc("size") : `${tc("size")} ${t("form.optional")}`}
+            <input name="size" className="input" maxLength={12} required={sizeRequired} defaultValue={listing?.size ?? ""}
+              placeholder={dept ? t("form.sizePh", { hint: SIZE_HINTS[dept] }) : ""} />
+          </label>
+          <label className="label">
+            {tc("material")}
             <select name="material" className="input" required defaultValue={listing?.material ?? ""}>
               <option value="" disabled>{t("form.choose")}</option>
               {MATERIALS.map((m) => <option key={m} value={m}>{tc(`mat.${m}`)}</option>)}
+            </select>
+          </label>
+          <label className="label">
+            {`${tc("color")} ${t("form.optional")}`}
+            <select name="color" className="input" defaultValue={listing?.color ?? ""}>
+              <option value="">{t("form.colorNone")}</option>
+              {COLORS.map((c) => <option key={c} value={c}>{tc(`color.${c}`)}</option>)}
+            </select>
+          </label>
+          <label className="label">
+            {tc("condition")}
+            <select name="condition" className="input" required defaultValue={listing?.condition ?? "normal"}>
+              {CONDITIONS.map((c) => <option key={c} value={c}>{tc(`cond.${c}`)}</option>)}
             </select>
           </label>
           <label className="label">

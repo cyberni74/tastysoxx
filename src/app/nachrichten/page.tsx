@@ -42,7 +42,7 @@ export default async function MessagesPage() {
       {rows.length === 0 ? (
         <Empty>
           {t("msg.empty")}{" "}
-          <Link href="/shop" className="font-semibold text-accent underline">{t("msg.emptyLink")}</Link>
+          <Link href="/marktplatz" className="font-semibold text-accent underline">{t("msg.emptyLink")}</Link>
         </Empty>
       ) : (
         <ul className="card divide-y divide-line overflow-hidden">

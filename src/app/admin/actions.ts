@@ -15,5 +15,5 @@ export async function setVerified(id: string, verified: boolean): Promise<void> 
   await supabase.from("profiles").update({ verified: parsed.data.verified }).eq("id", parsed.data.id);
   revalidatePath("/admin");
   revalidatePath("/verkaeufer/[username]", "page");
-  revalidatePath("/shop");
+  revalidatePath("/marktplatz");
 }

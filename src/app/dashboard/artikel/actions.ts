@@ -8,11 +8,18 @@ import { getT } from "@/i18n/server";
 import { seller } from "@/i18n/messages/seller";
 import { common } from "@/i18n/messages/common";
 import type { T } from "@/i18n/define";
+import { CATEGORIES, COLORS, CONDITIONS, DEPARTMENTS, MATERIALS } from "@/lib/constants";
+import type { Color, Condition, Department, Material } from "@/lib/types";
 
 export type FormState = { error?: string };
 type ST = T<(typeof seller)["de"]>;
 
 const BUCKET = "listing-images";
+
+function revalidateShop() {
+  revalidatePath("/marktplatz");
+  for (const d of DEPARTMENTS) revalidatePath(d.path);
+}
 
 /** "12,50" | "12.50" | "1.234,50" | "12 €" → cents, or null when invalid. */
 function parsePrice(raw: string): number | null {
@@ -25,12 +32,23 @@ function parsePrice(raw: string): number | null {
 const makeSchema = (t: ST) => z.object({
   title: z.string().trim().min(3, t("v.titleMin")).max(80, t("v.titleMax")),
   description: z.string().trim().max(2000, t("v.descMax")),
-  category: z.enum(["sneaker", "sport", "knie", "nylon"], { message: t("v.category") }),
-  material: z.enum(["Baumwolle", "Wolle", "Nylon", "Synthetik"], { message: t("v.material") }),
+  department: z.string().refine((d): d is Department => DEPARTMENTS.some((x) => x.id === d), t("v.department")),
+  category: z.string({ message: t("v.category") }).refine((c) => CATEGORIES.some((x) => x.id === c), t("v.category")),
+  material: z.string({ message: t("v.material") }).refine((m) => MATERIALS.includes(m as Material), t("v.material")),
+  size: z.string().trim().max(12, t("v.sizeMax")),
+  color: z.string().refine((c) => c === "" || COLORS.includes(c as Exclude<Color, "">), t("v.color")),
+  condition: z.string().refine((c) => CONDITIONS.includes(c as Condition), t("v.condition")),
   wear_days: z.coerce.number({ message: t("v.wearMissing") }).int(t("v.wearInt"))
     .min(1, t("v.wearMin")).max(30, t("v.wearMax")),
   price_cents: z.number({ message: t("v.price") }).int().min(500, t("v.priceMin")).max(50000, t("v.priceMax")),
   images: z.array(z.string().url(t("v.imageUrl"))).max(6, t("v.imagesMax")),
+}).superRefine((v, ctx) => {
+  if (CATEGORIES.find((c) => c.id === v.category)?.dept !== v.department) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["category"], message: t("v.categoryDept") });
+  }
+  if (v.department !== "socken" && !v.size) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["size"], message: t("v.sizeRequired") });
+  }
 });
 
 async function requireSeller() {
@@ -56,6 +74,10 @@ function parseForm(formData: FormData, uid: string, t: ST) {
     description: formData.get("description") ?? "",
     category: formData.get("category"),
     material: formData.get("material"),
+    department: formData.get("department") ?? "",
+    size: formData.get("size") ?? "",
+    color: formData.get("color") ?? "",
+    condition: formData.get("condition") ?? "normal",
     wear_days: formData.get("wear_days"),
     price_cents: price ?? Number.NaN,
     images,
@@ -66,7 +88,10 @@ function parseForm(formData: FormData, uid: string, t: ST) {
   if (parsed.data.images.some((u) => !u.startsWith(prefix) || u.slice(prefix.length).includes(".."))) {
     return { error: t("act.imagesOrigin") } as const;
   }
-  return { data: parsed.data } as const;
+  // department is generated in the DB from category
+  const { department: _department, ...data } = parsed.data;
+  void _department;
+  return { data } as const;
 }
 
 export async function createListing(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -79,7 +104,7 @@ export async function createListing(_prev: FormState, formData: FormData): Promi
   if (error) return { error: ctx.t("act.saveFailed") };
 
   revalidatePath("/dashboard");
-  revalidatePath("/shop");
+  revalidateShop();
   redirect("/dashboard");
 }
 
@@ -98,7 +123,7 @@ export async function updateListing(id: string, _prev: FormState, formData: Form
 
   revalidatePath("/dashboard");
   revalidatePath(`/artikel/${id}`);
-  revalidatePath("/shop");
+  revalidateShop();
   redirect("/dashboard");
 }
 
@@ -116,7 +141,7 @@ export async function setListingHidden(id: string, hidden: boolean): Promise<For
   revalidatePath("/dashboard");
   revalidatePath(`/dashboard/artikel/${id}`);
   revalidatePath(`/artikel/${id}`);
-  revalidatePath("/shop");
+  revalidateShop();
   return {};
 }
 
@@ -140,6 +165,6 @@ export async function deleteListing(id: string): Promise<FormState> {
   if (paths.length) await ctx.supabase.storage.from(BUCKET).remove(paths);
 
   revalidatePath("/dashboard");
-  revalidatePath("/shop");
+  revalidateShop();
   redirect("/dashboard");
 }

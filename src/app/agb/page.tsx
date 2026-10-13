@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
+import { pageMeta } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.terms") };
+  return pageMeta({ title: t("meta.terms"), path: "/agb" });
 }
 
 const SECTIONS: { h: string; p: string[] }[] = [
@@ -12,7 +13,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
     h: "§ 1 Geltungsbereich",
     p: [
       "Diese Allgemeinen Geschäftsbedingungen gelten für die Nutzung des Marktplatzes TastySoxx, betrieben von [Firmenname], [Anschrift] (nachfolgend „Betreiber“).",
-      "TastySoxx stellt eine Plattform bereit, auf der Verkäuferinnen getragene Socken anbieten und Käufer:innen diese erwerben können. Kaufverträge kommen ausschließlich zwischen Käufer:in und Verkäuferin zustande. Der Betreiber ist nicht Vertragspartei.",
+      "TastySoxx stellt eine Plattform bereit, auf der Verkäuferinnen getragene Socken, Slips und BHs anbieten und Käufer:innen diese erwerben können. Kaufverträge kommen ausschließlich zwischen Käufer:in und Verkäuferin zustande. Der Betreiber ist nicht Vertragspartei.",
     ],
   },
   {
@@ -23,10 +24,12 @@ const SECTIONS: { h: string; p: string[] }[] = [
     ],
   },
   {
-    h: "§ 3 Angebote der Verkäuferinnen",
+    h: "§ 3 Angebote (Socken, Slips, BHs)",
     p: [
-      "Verkäuferinnen sind für die Richtigkeit ihrer Angaben (Fotos, Material, Tragedauer, Preis) selbst verantwortlich. Verboten sind insbesondere Darstellungen Minderjähriger, pornografische Inhalte sowie Angebote, die gegen geltendes Recht verstoßen.",
-      "Der Betreiber kann Angebote ohne Angabe von Gründen entfernen.",
+      "Angeboten werden dürfen getragene Socken und Strümpfe, Slips und Unterwäsche sowie BHs, Sport-BHs und Bralettes.",
+      "Jedes Angebot muss wahrheitsgemäß enthalten: Bereich und Kategorie, Material, Tragedauer in Tagen, Zustand, Preis und mindestens ein Foto des angebotenen Produkts. Bei Slips und BHs ist die Größe Pflicht (z. B. M / 38 bzw. 75B), bei Socken empfohlen.",
+      "Verkäuferinnen sind für die Richtigkeit ihrer Angaben selbst verantwortlich. Verboten sind insbesondere jeder Bezug zu Minderjährigen, Fotos mit Gesicht, explizite oder pornografische Inhalte, gesundheitsgefährdende Zusätze sowie Angebote, die gegen geltendes Recht verstoßen. Einzelheiten regeln die Angebotsregeln unter /hilfe/angebotsregeln.",
+      "Der Betreiber kann Angebote ohne Angabe von Gründen entfernen und Konten bei Verstößen sperren.",
     ],
   },
   {
@@ -80,7 +83,7 @@ const SECTIONS_EN: { h: string; p: string[] }[] = [
     h: "§ 1 Scope",
     p: [
       "These terms and conditions apply to the use of the TastySoxx marketplace, operated by [Company name], [Address] (the “Operator”).",
-      "TastySoxx provides a platform on which sellers offer worn socks and buyers can purchase them. Purchase contracts are concluded exclusively between buyer and seller. The Operator is not a party to these contracts.",
+      "TastySoxx provides a platform on which sellers offer worn socks, panties and bras and buyers can purchase them. Purchase contracts are concluded exclusively between buyer and seller. The Operator is not a party to these contracts.",
     ],
   },
   {
@@ -91,10 +94,12 @@ const SECTIONS_EN: { h: string; p: string[] }[] = [
     ],
   },
   {
-    h: "§ 3 Sellers' listings",
+    h: "§ 3 Listings (socks, panties, bras)",
     p: [
-      "Sellers are responsible for the accuracy of their information (photos, material, days worn, price). In particular, depictions of minors, pornographic content and listings that violate applicable law are prohibited.",
-      "The Operator may remove listings without giving reasons.",
+      "Worn socks and stockings, panties and underwear, and bras, sports bras and bralettes may be listed.",
+      "Every listing must truthfully state: department and category, material, days worn, condition, price and at least one photo of the actual product. Size is required for panties and bras (e.g. M / 38 or 75B) and recommended for socks.",
+      "Sellers are responsible for the accuracy of their information. Prohibited in particular are any reference to minors, photos showing faces, explicit or pornographic content, anything hazardous to health and listings that violate applicable law. Details are set out in the listing rules at /hilfe/angebotsregeln.",
+      "The Operator may remove listings without giving reasons and block accounts for violations.",
     ],
   },
   {

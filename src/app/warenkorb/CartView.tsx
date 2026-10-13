@@ -30,7 +30,7 @@ export function CartView() {
     return (
       <Empty>
         <p>{t("cart.empty")}</p>
-        <Link href="/shop" className="btn-primary mt-4">{t("cart.toShop")}</Link>
+        <Link href="/marktplatz" className="btn-primary mt-4">{t("cart.toShop")}</Link>
       </Empty>
     );
   }
@@ -84,7 +84,7 @@ export function CartView() {
         </dl>
         <p className="text-xs text-muted">{t("cart.priceNote")}</p>
         <Link href="/kasse" className="btn-primary">{t("cart.checkout")}</Link>
-        <Link href="/shop" className="text-center text-sm font-semibold text-accent hover:underline">{t("cart.continue")}</Link>
+        <Link href="/marktplatz" className="text-center text-sm font-semibold text-accent hover:underline">{t("cart.continue")}</Link>
       </aside>
     </div>
   );

@@ -3,7 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getSession } from "@/lib/supabase/server";
 import { fetchListings, fetchStats } from "@/lib/queries";
-import { CATEGORIES } from "@/lib/constants";
+import { DEPARTMENTS } from "@/lib/constants";
+import { pageMeta } from "@/lib/seo";
 import { getT } from "@/i18n/server";
 import { browse } from "@/i18n/messages/browse";
 import { common } from "@/i18n/messages/common";
@@ -16,7 +17,7 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(browse);
-  return { title: { absolute: t("home.metaTitle") } };
+  return pageMeta({ title: t("home.metaTitle"), description: t("home.metaDesc"), path: "/", absoluteTitle: true });
 }
 
 const FEATURES = [
@@ -53,14 +54,14 @@ export default async function Home() {
       <section className="wrap grid items-center gap-10 py-12 md:grid-cols-[1.15fr_1fr] md:py-20">
         <div className="flex flex-col gap-5">
           <p className="eyebrow">{t("home.eyebrow")}</p>
-          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
             {t("home.heroBefore")}<span className="text-accent">{t("home.heroAccent")}</span>{t("home.heroAfter")}
           </h1>
           <p className="max-w-xl text-lg text-muted">
             {t("home.lead")}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/shop" className="btn-primary">{t("home.ctaBuy")}</Link>
+            <Link href="/marktplatz" className="btn-primary">{t("home.ctaBuy")}</Link>
             <Link href="/verkaufen" className="btn-ghost">{t("home.ctaSell")}</Link>
           </div>
         </div>
@@ -101,18 +102,22 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="wrap pt-12" aria-labelledby="kat-h">
-        <h2 id="kat-h" className="mb-5 text-2xl font-bold sm:text-3xl">{t("home.categories")}</h2>
-        <ul className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {CATEGORIES.map((c) => (
-            <li key={c.id}>
-              <Link href={`/shop?kat=${c.id}`} className="group relative block aspect-[4/3] overflow-hidden rounded-2xl">
-                <Swatch hue={c.hue} className="absolute inset-0 transition group-hover:scale-105" />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3 pt-8 font-display text-lg font-bold text-white">
-                  {tc(`cat.${c.id}`)}
+      {/* Departments */}
+      <section className="wrap pt-12" aria-labelledby="abt-h">
+        <h2 id="abt-h" className="mb-5 text-2xl font-bold sm:text-3xl">{t("home.deptsTitle")}</h2>
+        <ul className="grid gap-3 sm:grid-cols-3">
+          {DEPARTMENTS.map((d) => (
+            <li key={d.id} className="card flex flex-col overflow-hidden">
+              <Link href={d.path} className="group relative block aspect-[16/9] overflow-hidden">
+                <Swatch hue={d.hue} className="absolute inset-0 transition group-hover:scale-105" />
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-3 pt-10 font-display text-xl font-bold text-white">
+                  {tc(`dept.${d.id}`)}
                 </span>
               </Link>
+              <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 text-sm font-semibold">
+                <Link href={d.path} className="text-accent hover:underline">{t("home.deptBrowse")} →</Link>
+                <Link href={d.sellPath} className="text-blue hover:underline">{t("home.deptSell", { dept: tc(`deptShort.${d.id}`) })}</Link>
+              </div>
             </li>
           ))}
         </ul>
@@ -122,7 +127,7 @@ export default async function Home() {
       <section className="wrap pt-12" aria-labelledby="neu-h">
         <div className="mb-5 flex items-end justify-between gap-4">
           <h2 id="neu-h" className="text-2xl font-bold sm:text-3xl">{t("home.newTitle")}</h2>
-          <Link href="/shop" className="text-sm font-semibold text-accent hover:underline">{t("home.allListings")}</Link>
+          <Link href="/marktplatz" className="text-sm font-semibold text-accent hover:underline">{t("home.allListings")}</Link>
         </div>
         {!data ? <SetupNotice /> : data.listings.length === 0 ? (
           <Empty>{t("home.noListings")}</Empty>

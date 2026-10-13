@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
+import { pageMeta } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.imprint") };
+  return pageMeta({ title: t("meta.imprint"), path: "/impressum" });
 }
 
 /** Each section: heading + lines (rendered with line breaks). */

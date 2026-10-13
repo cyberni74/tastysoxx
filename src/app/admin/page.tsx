@@ -35,6 +35,7 @@ export default async function AdminPage() {
         <p className="eyebrow">{t("admin.eyebrow")}</p>
         <h1 className="text-3xl font-extrabold">{t("admin.title")}</h1>
         <p className="mt-1 text-sm text-muted">{t("admin.summary", { n: sellers.length, open })}</p>
+        <Link href="/admin/meldungen" className="btn-ghost btn-sm mt-3">{t("admin.reports")}</Link>
       </div>
       {sellers.length === 0 ? (
         <Empty>{t("admin.empty")}</Empty>

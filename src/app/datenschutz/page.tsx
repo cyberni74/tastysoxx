@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
+import { pageMeta } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.privacy") };
+  return pageMeta({ title: t("meta.privacy"), path: "/datenschutz" });
 }
 
 const SECTIONS: { h: string; p: string[] }[] = [
@@ -18,13 +19,14 @@ const SECTIONS: { h: string; p: string[] }[] = [
       "Kontodaten: E-Mail-Adresse, Benutzername, Passwort (verschlüsselt gespeichert), Bestätigung der Volljährigkeit sowie freiwillige Profilangaben (z. B. Land, Altersgruppe, Schuhgröße, Profilbild).",
       "Bestelldaten: bestellte Artikel, Preise und die Lieferadresse. Die Lieferadresse ist nur für die Verkäuferin der jeweiligen Bestellung sichtbar.",
       "Nachrichten: Inhalte aus dem Chat zwischen Käufer:in und Verkäuferin, zur Abwicklung von Bestellungen und zur Aufklärung von Missbrauch.",
+      "Meldungen: gemeldetes Angebot oder Profil, Grund, Beschreibung, Zeitpunkt, bei angemeldeten Personen die Konto-ID der meldenden Person sowie – freiwillig – eine Kontakt-E-Mail für Rückfragen. Meldungen sehen nur Administrator:innen, nicht die gemeldete Person.",
       "Technische Daten: IP-Adresse und Zeitpunkt von Anfragen in Server-Logs.",
     ],
   },
   {
     h: "3. Zwecke und Rechtsgrundlagen",
     p: [
-      "Bereitstellung des Marktplatzes und Abwicklung von Bestellungen (Art. 6 Abs. 1 lit. b DSGVO), Sicherheit und Missbrauchsabwehr (Art. 6 Abs. 1 lit. f DSGVO), Erfüllung gesetzlicher Pflichten (Art. 6 Abs. 1 lit. c DSGVO).",
+      "Bereitstellung des Marktplatzes und Abwicklung von Bestellungen (Art. 6 Abs. 1 lit. b DSGVO), Sicherheit, Missbrauchsabwehr und Bearbeitung von Meldungen (Art. 6 Abs. 1 lit. f DSGVO), Erfüllung gesetzlicher Pflichten (Art. 6 Abs. 1 lit. c DSGVO).",
     ],
   },
   {
@@ -43,7 +45,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "6. Speicherdauer",
     p: [
-      "Kontodaten speichern wir, solange dein Konto besteht. Bestelldaten bewahren wir im Rahmen gesetzlicher Aufbewahrungsfristen auf. [Fristen ergänzen]",
+      "Kontodaten speichern wir, solange dein Konto besteht. Meldungen speichern wir, bis sie abschließend bearbeitet sind, längstens [Frist]; eine freiwillige Kontakt-E-Mail löschen wir mit der Meldung. Bestelldaten bewahren wir im Rahmen gesetzlicher Aufbewahrungsfristen auf. [Fristen ergänzen]",
     ],
   },
   {
@@ -71,13 +73,14 @@ const SECTIONS_EN: { h: string; p: string[] }[] = [
       "Account data: email address, username, password (stored encrypted), confirmation of legal age and optional profile details (e.g. country, age range, shoe size, profile picture).",
       "Order data: ordered items, prices and the shipping address. The shipping address is only visible to the seller of the respective order.",
       "Messages: content of the chat between buyer and seller, for handling orders and investigating abuse.",
+      "Reports: the reported listing or profile, reason, description, time, the reporter's account ID if signed in and – optionally – a contact email for follow-up. Reports are only visible to administrators, not to the reported person.",
       "Technical data: IP address and time of requests in server logs.",
     ],
   },
   {
     h: "3. Purposes and legal bases",
     p: [
-      "Providing the marketplace and handling orders (Art. 6(1)(b) GDPR), security and abuse prevention (Art. 6(1)(f) GDPR), compliance with legal obligations (Art. 6(1)(c) GDPR).",
+      "Providing the marketplace and handling orders (Art. 6(1)(b) GDPR), security, abuse prevention and handling reports (Art. 6(1)(f) GDPR), compliance with legal obligations (Art. 6(1)(c) GDPR).",
     ],
   },
   {
@@ -96,7 +99,7 @@ const SECTIONS_EN: { h: string; p: string[] }[] = [
   {
     h: "6. Storage period",
     p: [
-      "We store account data as long as your account exists. Order data is kept in line with statutory retention periods. [add periods]",
+      "We store account data as long as your account exists. Reports are kept until they are fully handled, at most [period]; an optional contact email is deleted together with the report. Order data is kept in line with statutory retention periods. [add periods]",
     ],
   },
   {

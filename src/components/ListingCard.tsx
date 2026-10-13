@@ -18,8 +18,10 @@ export function ListingCard({ l }: { l: ListingWithSeller }) {
           // eslint-disable-next-line @next/next/no-img-element
           ? <img src={l.images[0]} alt={l.title} className="size-full object-cover transition group-hover:scale-[1.03]" loading="lazy" />
           : <Swatch hue={cat?.hue ?? 165} className="size-full" />}
-        <span className="absolute left-2.5 top-2.5 rounded-full bg-surface px-2.5 py-1 text-xs font-semibold">{t(`catShort.${l.category}`)}</span>
-        {l.status !== "active" && <span className="absolute right-2.5 top-2.5 rounded-full bg-fg px-2.5 py-1 text-xs font-semibold text-bg">{t(`listing.${l.status}`)}</span>}
+        <span className="absolute left-2.5 top-2.5 max-w-[calc(100%-1.25rem)] truncate rounded-full bg-surface px-2.5 py-1 text-xs font-semibold">
+          {t(`catShort.${l.category}`)}{l.size && <span className="text-muted"> · {l.size}</span>}
+        </span>
+        {l.status !== "active" && <span className="absolute bottom-2.5 right-2.5 rounded-full bg-fg px-2.5 py-1 text-xs font-semibold text-bg">{t(`listing.${l.status}`)}</span>}
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-1 p-3.5">
         {l.seller && (

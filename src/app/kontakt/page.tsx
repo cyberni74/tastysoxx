@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
+import { pageMeta } from "@/lib/seo";
 import { CopyEmail } from "./CopyEmail";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
-  return { title: t("meta.contact") };
+  return pageMeta({ title: t("meta.contact"), path: "/kontakt" });
 }
 
 const NOTES = [1, 2, 3, 4] as const;
@@ -30,7 +31,7 @@ export default async function ContactPage() {
           {NOTES.map((n) => <li key={n}>{t(`contact.note${n}`)}</li>)}
         </ul>
         <p className="mt-2 text-muted">
-          {t("contact.faq")} <Link href="/faq" className="font-semibold text-accent underline">{t("contact.faqLink")}</Link>.
+          {t("contact.faq")} <Link href="/hilfe" className="font-semibold text-accent underline">{t("contact.faqLink")}</Link>.
         </p>
       </div>
     </div>

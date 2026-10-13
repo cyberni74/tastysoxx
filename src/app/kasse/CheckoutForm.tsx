@@ -33,7 +33,7 @@ export function CheckoutForm({ defaultCountry }: { defaultCountry: string }) {
     return (
       <Empty>
         <p>{t("cart.empty")}</p>
-        <Link href="/shop" className="btn-primary mt-4">{t("cart.toShop")}</Link>
+        <Link href="/marktplatz" className="btn-primary mt-4">{t("cart.toShop")}</Link>
       </Empty>
     );
   }
