@@ -1,14 +1,22 @@
-export const eur = (cents: number) =>
-  (cents / 100).toLocaleString("de-DE", { style: "currency", currency: "EUR" });
+import { INTL, type Locale } from "@/i18n/config";
+import { common } from "@/i18n/messages/common";
+import { translator } from "@/i18n/define";
 
-export function timeAgo(iso: string | null | undefined): string {
+export const eur = (cents: number, locale: Locale = "de") =>
+  (cents / 100).toLocaleString(INTL[locale], { style: "currency", currency: "EUR" });
+
+export const date = (iso: string, locale: Locale = "de") =>
+  new Date(iso).toLocaleDateString(INTL[locale], { day: "numeric", month: "short", year: "numeric" });
+
+export function timeAgo(iso: string | null | undefined, locale: Locale = "de"): string {
   if (!iso) return "";
+  const t = translator(common, locale);
   const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
-  if (m < 10) return "gerade aktiv";
-  if (m < 60) return `vor ${m} Min.`;
-  if (m < 1440) return `vor ${Math.round(m / 60)} Std.`;
-  if (m < 2880) return "gestern";
-  return `vor ${Math.round(m / 1440)} Tagen`;
+  if (m < 10) return t("time.online");
+  if (m < 60) return t("time.min", { n: m });
+  if (m < 1440) return t("time.hours", { n: Math.round(m / 60) });
+  if (m < 2880) return t("time.yesterday");
+  return t("time.days", { n: Math.round(m / 1440) });
 }
 
 export const isOnline = (iso: string | null | undefined) =>
@@ -19,4 +27,7 @@ export const stars = (r: number) => {
   return "★".repeat(n) + "☆".repeat(5 - n);
 };
 
-export const wearLabel = (days: number) => (days === 1 ? "1 Tag" : `${days} Tage`);
+export const wearLabel = (days: number, locale: Locale = "de") => {
+  const t = translator(common, locale);
+  return days === 1 ? t("wearDays.one") : t("wearDays.many", { n: days });
+};

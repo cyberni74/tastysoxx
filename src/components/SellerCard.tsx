@@ -1,8 +1,12 @@
+"use client";
 import Link from "next/link";
+import { useT } from "@/i18n/client";
+import { common } from "@/i18n/messages/common";
 import type { Profile } from "@/lib/types";
 import { Avatar, Flag, LastActive, Stars, VerifiedBadge } from "./Bits";
 
 export function SellerCard({ p, rating = 0, count = 0 }: { p: Profile; rating?: number; count?: number }) {
+  const t = useT(common);
   return (
     <Link href={`/verkaeufer/${p.username}`} className="card grid grid-cols-[76px_1fr] gap-3.5 p-4 transition hover:border-accent">
       <Avatar url={p.avatar_url} name={p.username} />
@@ -12,9 +16,9 @@ export function SellerCard({ p, rating = 0, count = 0 }: { p: Profile; rating?: 
         </div>
         <Stars rating={rating} count={count} />
         <div className="flex flex-wrap gap-1.5 text-xs">
-          {p.age_range && <span className="rounded-md bg-surface-2 px-2 py-0.5">{p.age_range} J.</span>}
-          {p.build && <span className="rounded-md bg-surface-2 px-2 py-0.5">{p.build}</span>}
-          {p.shoe_size && <span className="rounded-md bg-surface-2 px-2 py-0.5">Schuhgr. {p.shoe_size}</span>}
+          {p.age_range && <span className="rounded-md bg-surface-2 px-2 py-0.5">{t("age", { a: p.age_range })}</span>}
+          {p.build && <span className="rounded-md bg-surface-2 px-2 py-0.5">{t(`build.${p.build as "normal"}`)}</span>}
+          {p.shoe_size && <span className="rounded-md bg-surface-2 px-2 py-0.5">{t("shoeSize", { s: p.shoe_size })}</span>}
         </div>
         {p.bio && <p className="line-clamp-2 text-sm text-muted">{p.bio}</p>}
       </div>

@@ -1,14 +1,20 @@
+"use client";
 import { COUNTRIES } from "@/lib/constants";
 import { isOnline, stars, timeAgo } from "@/lib/format";
+import { useLocale, useT } from "@/i18n/client";
+import { common } from "@/i18n/messages/common";
 
-export function VerifiedBadge({ title = "Verifiziert" }: { title?: string }) {
+export function VerifiedBadge({ title }: { title?: string }) {
+  const t = useT(common);
+  title ??= t("verified");
   return <span title={title} aria-label={title} className="inline-grid size-4 shrink-0 place-items-center rounded-full bg-verified text-[10px] font-extrabold text-white">✓</span>;
 }
 
 export function Stars({ rating, count }: { rating: number; count?: number }) {
+  const t = useT(common);
   return (
     <span className="text-sm">
-      <span className="tracking-wider text-star" aria-label={`${rating} von 5 Sternen`}>{stars(rating)}</span>
+      <span className="tracking-wider text-star" aria-label={t("starsLabel", { r: rating })}>{stars(rating)}</span>
       {count !== undefined && <span className="ml-1 text-muted">({count})</span>}
     </span>
   );
@@ -19,9 +25,10 @@ export function Flag({ country }: { country: string }) {
 }
 
 export function LastActive({ iso }: { iso: string | null | undefined }) {
+  const locale = useLocale();
   return isOnline(iso)
-    ? <span className="text-xs font-semibold text-ok">● gerade aktiv</span>
-    : <span className="text-xs text-muted">{timeAgo(iso)}</span>;
+    ? <span className="text-xs font-semibold text-ok">● {timeAgo(iso, locale)}</span>
+    : <span className="text-xs text-muted">{timeAgo(iso, locale)}</span>;
 }
 
 export function Avatar({ url, name, size = 76 }: { url: string | null; name: string; size?: number }) {
@@ -50,9 +57,10 @@ export function Swatch({ hue, className = "" }: { hue: number; className?: strin
 }
 
 export function SetupNotice() {
+  const t = useT(common);
   return (
     <div className="card border-dashed p-6 text-center text-muted">
-      Die Datenbank ist noch nicht verbunden. Sobald sie eingerichtet ist, erscheinen hier echte Angebote.
+      {t("setup")}
     </div>
   );
 }
