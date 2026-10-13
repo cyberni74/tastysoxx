@@ -8,9 +8,9 @@ export const eur = (cents: number, locale: Locale = "de") =>
 export const date = (iso: string, locale: Locale = "de") =>
   new Date(iso).toLocaleDateString(INTL[locale], { day: "numeric", month: "short", year: "numeric" });
 
-export function timeAgo(iso: string | null | undefined, locale: Locale = "de"): string {
+export function timeAgo(iso: string | null | undefined): string {
   if (!iso) return "";
-  const t = translator(common, locale);
+  const t = translator(common);
   const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
   if (m < 10) return t("time.online");
   if (m < 60) return t("time.min", { n: m });
@@ -27,7 +27,7 @@ export const stars = (r: number) => {
   return "★".repeat(n) + "☆".repeat(5 - n);
 };
 
-export const wearLabel = (days: number, locale: Locale = "de") => {
-  const t = translator(common, locale);
+export const wearLabel = (days: number) => {
+  const t = translator(common);
   return days === 1 ? t("wearDays.one") : t("wearDays.many", { n: days });
 };

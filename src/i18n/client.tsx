@@ -13,6 +13,5 @@ export const useLocale = () => useContext(LocaleCtx);
 
 /** Client Components: `const t = useT(messages)`. */
 export function useT<D extends Dict>(m: Messages<D>) {
-  const locale = useLocale();
-  return useMemo(() => translator(m, locale), [m, locale]);
+  return useMemo(() => translator(m), [m]);
 }

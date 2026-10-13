@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       title: listing.title,
       cat: tc(`cat.${listing.category}`),
       price: eur(listing.price_cents, locale),
-      wear: wearLabel(listing.wear_days, locale),
+      wear: wearLabel(listing.wear_days),
       seller: listing.seller?.username ?? t("item.seller"),
     }),
     path: `/artikel/${listing.id}`,
@@ -88,7 +88,7 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
     ...(listing.color ? [{ k: tc("color"), v: tc(`color.${listing.color}`) }] : []),
     { k: tc("condition"), v: tc(`cond.${listing.condition}`) },
     { k: tc("material"), v: tc(`mat.${listing.material}`) },
-    { k: t("item.worn"), v: wearLabel(listing.wear_days, locale) },
+    { k: t("item.worn"), v: wearLabel(listing.wear_days) },
   ];
 
   const productLd = {

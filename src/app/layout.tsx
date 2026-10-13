@@ -13,15 +13,12 @@ const fredoka = Fredoka({ subsets: ["latin"], variable: "--font-fredoka", weight
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree" });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const en = (await getLocale()) === "en";
   return {
     title: {
-      default: en ? "Buy worn socks, panties & bras | TastySoxx" : "Getragene Socken, Slips & BHs kaufen | TastySoxx",
+      default: "Getragene Socken, Slips & BHs kaufen | TastySoxx",
       template: "%s | TastySoxx",
     },
-    description: en
-      ? "Marketplace for worn socks, panties and bras: verified sellers, private chat, neutral packaging. Adults 18+ only."
-      : "Marktplatz für getragene Socken, Slips und BHs: verifizierte Verkäuferinnen, privater Chat, neutrale Verpackung. Nur ab 18.",
+    description: "Marktplatz für getragene Socken, Slips und BHs: verifizierte Verkäuferinnen, privater Chat, neutrale Verpackung. Nur ab 18.",
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://tastysoxx.com"),
     robots: { index: true, follow: true },
   };

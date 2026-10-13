@@ -1,7 +1,7 @@
 "use client";
 import { COUNTRIES } from "@/lib/constants";
 import { isOnline, stars, timeAgo } from "@/lib/format";
-import { useLocale, useT } from "@/i18n/client";
+import { useT } from "@/i18n/client";
 import { common } from "@/i18n/messages/common";
 
 export function VerifiedBadge({ title }: { title?: string }) {
@@ -25,10 +25,9 @@ export function Flag({ country }: { country: string }) {
 }
 
 export function LastActive({ iso }: { iso: string | null | undefined }) {
-  const locale = useLocale();
   return isOnline(iso)
-    ? <span className="text-xs font-semibold text-ok">● {timeAgo(iso, locale)}</span>
-    : <span className="text-xs text-muted">{timeAgo(iso, locale)}</span>;
+    ? <span className="text-xs font-semibold text-ok">● {timeAgo(iso)}</span>
+    : <span className="text-xs text-muted">{timeAgo(iso)}</span>;
 }
 
 export function Avatar({ url, name, size = 76 }: { url: string | null; name: string; size?: number }) {

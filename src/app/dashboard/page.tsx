@@ -109,7 +109,7 @@ export default async function DashboardPage() {
                     <div className="truncate font-semibold">{l.title}</div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
                       <span className="font-semibold tabular-nums text-fg">{eur(l.price_cents, locale)}</span>
-                      <span>{tc(`deptShort.${l.department}`)} · {tc(`catShort.${l.category}`)} · {wearLabel(l.wear_days, locale)}</span>
+                      <span>{tc(`deptShort.${l.department}`)} · {tc(`catShort.${l.category}`)} · {wearLabel(l.wear_days)}</span>
                       <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[l.status]}`}>{tc(`listing.${l.status}`)}</span>
                     </div>
                   </div>

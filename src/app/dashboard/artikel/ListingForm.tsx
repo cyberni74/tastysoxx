@@ -5,7 +5,7 @@ import { getBrowserClient } from "@/lib/supabase/client";
 import { COLORS, CONDITIONS, DEPARTMENTS, MATERIALS, SIZE_HINTS, categoriesOf } from "@/lib/constants";
 import type { Department, Listing } from "@/lib/types";
 import type { FormState } from "./actions";
-import { useLocale, useT } from "@/i18n/client";
+import { useT } from "@/i18n/client";
 import { seller } from "@/i18n/messages/seller";
 import { common } from "@/i18n/messages/common";
 
@@ -19,7 +19,6 @@ type Action = (prev: FormState, formData: FormData) => Promise<FormState>;
 export function ListingForm({ action, userId, listing }: { action: Action; userId: string; listing?: Listing }) {
   const t = useT(seller);
   const tc = useT(common);
-  const locale = useLocale();
   const [state, formAction, pending] = useActionState(action, {});
   const [dept, setDept] = useState<Department | "">(listing?.department ?? "");
   const [category, setCategory] = useState<string>(listing?.category ?? "");
@@ -77,7 +76,7 @@ export function ListingForm({ action, userId, listing }: { action: Action; userI
     });
   }
 
-  const defaultPrice = listing ? (listing.price_cents / 100).toFixed(2).replace(".", locale === "en" ? "." : ",") : "";
+  const defaultPrice = listing ? (listing.price_cents / 100).toFixed(2).replace(".", ",") : "";
 
   return (
     <form className="grid gap-5"
@@ -189,7 +188,7 @@ export function ListingForm({ action, userId, listing }: { action: Action; userI
           <label className="label">
             {t("form.price")}
             <input name="price" inputMode="decimal" required className="input" defaultValue={defaultPrice}
-              placeholder={locale === "en" ? "12.50" : "12,50"} />
+              placeholder="12,50" />
             <span className="text-xs font-normal text-muted">{t("form.priceHint")}</span>
           </label>
         </div>

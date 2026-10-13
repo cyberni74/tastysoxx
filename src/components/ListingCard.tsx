@@ -30,7 +30,7 @@ export function ListingCard({ l }: { l: ListingWithSeller }) {
           </div>
         )}
         <h3 className="font-sans text-base font-semibold leading-snug">{l.title}</h3>
-        <div className="text-sm text-muted">{t(`mat.${l.material}`)} · {t("worn", { d: wearLabel(l.wear_days, locale) })}</div>
+        <div className="text-sm text-muted">{t(`mat.${l.material}`)} · {t("worn", { d: wearLabel(l.wear_days) })}</div>
         <div className="mt-auto pt-2 font-display text-xl font-bold tabular-nums">{eur(l.price_cents, locale)}</div>
       </div>
     </Link>

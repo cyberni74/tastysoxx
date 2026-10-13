@@ -101,81 +101,9 @@ const DE: { intro: string; sections: GuideSection[] } = {
   ],
 };
 
-const EN: typeof DE = {
-  intro: "So buyers know what they're getting and the marketplace stays safe, the same rules apply to every listing.",
-  sections: [
-    {
-      h: "Required in every listing",
-      body: (
-        <>
-          <p>Title, department and category, material, days worn, condition (light, normal or heavy signs of wear), price and at least one meaningful photo. Colour is optional but helpful.</p>
-          <DeptTable head={["Department", "Size", "Note"]} rows={[
-            ["Socks", "Optional, as shoe size, e.g. 38–40 (EU)", "State the type: ankle, sport, knee, nylon, tights"],
-            ["Panties", "Required, e.g. M / 38", "Cut: panties, thong or hipster"],
-            ["Bras", "Required, e.g. 75B (bralettes also S/M/L)", "Type: bra, sports bra or bralette"],
-          ]} />
-        </>
-      ),
-    },
-    {
-      h: "Photos",
-      body: (
-        <ul>
-          <li>The photo shows the actual product – not a stock image from the internet.</li>
-          <li>No faces, no explicit or sexualised body shots. For socks, photos on the foot up to the ankle or knee are fine.</li>
-          <li>No other people and no personal details (letters, IDs, addresses) in the picture.</li>
-        </ul>
-      ),
-    },
-    {
-      h: "Prohibited",
-      body: (
-        <ul>
-          <li><b>Anything involving minors</b> – listings by, with or alluding to people under 18 (e.g. school uniform, “first bra”). We report this to the authorities.</li>
-          <li>Explicit or pornographic images and text.</li>
-          <li>Bodily fluids beyond normal wear, blood, drugs or anything hazardous to health.</li>
-          <li>False details about size, material, days worn or condition; stolen photos.</li>
-          <li>Private contact details (phone, messenger, social media) in listings or the chat; meetings and deals outside an order.</li>
-        </ul>
-      ),
-    },
-    {
-      h: "Verification",
-      body: (
-        <p>Sellers can have their profile verified. Write to us via <Link href="/kontakt">Contact</Link> from the email address you registered with. We check that a real adult is behind the profile and then add the blue check mark. The check mark says nothing about individual listings – it only confirms the profile.</p>
-      ),
-    },
-    {
-      h: "How we handle reports",
-      body: (
-        <>
-          <p>Anyone can report a listing or profile via <Link href="/melden">Report</Link> – no account needed. A contact email is optional and only needed if you’d like a reply.</p>
-          <ul>
-            <li>Only our team sees reports, not the reported person.</li>
-            <li>Suspected minors or illegal content are reviewed first, and affected listings are hidden immediately.</li>
-            <li>All other reports are usually reviewed within a few days.</li>
-          </ul>
-        </>
-      ),
-    },
-    {
-      h: "Consequences of violations",
-      body: (
-        <ul>
-          <li>A note asking you to correct the listing.</li>
-          <li>Hiding or deleting the listing.</li>
-          <li>Removal of the blue check mark.</li>
-          <li>Temporary or permanent account suspension.</li>
-          <li>For criminal content, especially involving minors: a report to the authorities.</li>
-        </ul>
-      ),
-    },
-  ],
-};
-
 export default async function RulesGuide() {
-  const { t, locale } = await getT(info);
-  const c = locale === "en" ? EN : DE;
+  const { t } = await getT(info);
+  const c = DE;
   return (
     <Guide eyebrow={t("help.guide")} title={t("guide.rules")} intro={c.intro} sections={c.sections}
       back={{ href: "/hilfe", label: t("help.back") }}

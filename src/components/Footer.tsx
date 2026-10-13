@@ -5,13 +5,13 @@ import { common } from "@/i18n/messages/common";
 import { Logo } from "./Logo";
 
 const HELP = [
-  { href: "/hilfe/kaufen-und-verkaufen", de: "So funktioniert Kaufen und Verkaufen", en: "How buying and selling works" },
-  { href: "/hilfe/versand-zahlung-privatsphaere", de: "Versand, Zahlung und Privatsphäre", en: "Shipping, payment and privacy" },
-  { href: "/hilfe/angebotsregeln", de: "Produktinformationen und Angebotsregeln", en: "Product information and listing rules" },
+  { href: "/hilfe/kaufen-und-verkaufen", de: "So funktioniert Kaufen und Verkaufen" },
+  { href: "/hilfe/versand-zahlung-privatsphaere", de: "Versand, Zahlung und Privatsphäre" },
+  { href: "/hilfe/angebotsregeln", de: "Produktinformationen und Angebotsregeln" },
 ];
 
 export async function Footer() {
-  const { t, locale } = await getT(common);
+  const { t } = await getT(common);
   const link = "hover:text-accent";
   return (
     <footer className="mt-20 border-t border-line bg-surface">
@@ -33,7 +33,7 @@ export async function Footer() {
             <li><Link href="/verkaufen" className={link}>{t("nav.sell")}</Link></li>
             {DEPARTMENTS.map((d) => (
               <li key={d.id}><Link href={d.sellPath} className={link}>
-                {locale === "en" ? `Sell worn ${t(`deptShort.${d.id}`).toLowerCase()}` : `Getragene ${t(`deptShort.${d.id}`)} verkaufen`}
+                Getragene {t(`deptShort.${d.id}`)} verkaufen
               </Link></li>
             ))}
           </ul>
@@ -41,7 +41,7 @@ export async function Footer() {
         <nav aria-label={t("nav.help")}>
           <h4 className="eyebrow mb-3">{t("nav.help")}</h4>
           <ul className="grid gap-1.5 text-sm">
-            {HELP.map((h) => <li key={h.href}><Link href={h.href} className={link}>{locale === "en" ? h.en : h.de}</Link></li>)}
+            {HELP.map((h) => <li key={h.href}><Link href={h.href} className={link}>{h.de}</Link></li>)}
             <li><Link href="/kontakt" className={link}>{t("footer.contact")}</Link></li>
           </ul>
         </nav>

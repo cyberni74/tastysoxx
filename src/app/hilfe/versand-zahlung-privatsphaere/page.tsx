@@ -77,74 +77,9 @@ const DE: { intro: string; sections: GuideSection[]; faq: QA[] } = {
   ],
 };
 
-const EN: typeof DE = {
-  intro: "An honest overview of how payment and shipping work, who sees which of your details and what we store.",
-  sections: [
-    {
-      h: "Payment: directly to the seller",
-      body: (
-        <>
-          <p>TastySoxx does not process payments. After you order, the seller sends you her payment details in the chat and you pay her directly. That means there is <b>no escrow and no buyer protection</b> from us.</p>
-          <ul>
-            <li>Only pay for an order you placed on TastySoxx.</li>
-            <li>Check reviews and the blue check mark first.</li>
-            <li>As long as the order hasn’t been confirmed as paid, you can cancel it.</li>
-            <li>If there’s a problem: chat first, then <Link href="/kontakt">Contact</Link> or <Link href="/melden">Report</Link>.</li>
-          </ul>
-        </>
-      ),
-    },
-    {
-      h: "Shipping",
-      body: (
-        <ul>
-          <li>Flat €4.90 shipping per seller, no matter how many items.</li>
-          <li>Neutral packaging with no hint of what’s inside.</li>
-          <li>An alias instead of a real name on the parcel is possible – as the seller’s sender name.</li>
-          <li>The seller ships once payment has arrived and sets the status to “Shipped”.</li>
-        </ul>
-      ),
-    },
-    {
-      h: "What the seller sees about you",
-      body: (
-        <>
-          <p>Your username, your chat messages and – only for an order – the <b>shipping address of that order</b>: name, street, postcode, city and country. She does not see your email address or password.</p>
-          <p>Use a name under which you reliably receive mail. A parcel locker or post office as delivery address works if the carrier supports it.</p>
-        </>
-      ),
-    },
-    {
-      h: "What others see",
-      body: (
-        <p>Publicly visible are your username, country, profile picture (if uploaded), when you were last active, and for sellers their profile details, listings and reviews. Orders and chats are only visible to the people involved.</p>
-      ),
-    },
-    {
-      h: "What TastySoxx stores",
-      body: (
-        <>
-          <ul>
-            <li>Account: email address, username, password (encrypted), confirmation of legal age, optional profile details.</li>
-            <li>Listings with photos, orders with shipping address, chat messages, reviews.</li>
-            <li>Reports: reason, description and – optionally – a contact email.</li>
-          </ul>
-          <p>This data is stored with Supabase in a data centre in the EU (Frankfurt am Main). The website is served via Vercel. We only use strictly necessary cookies (sign-in, language, cart). Details in the <Link href="/datenschutz">privacy policy</Link>.</p>
-        </>
-      ),
-    },
-  ],
-  faq: [
-    { q: "How is it shipped?", a: "In neutral packaging with no hint of what's inside. The seller can use an alias instead of her real name as sender. Shipping is a flat €4.90 per seller." },
-    { q: "Is there buyer protection?", a: "No. Payment goes directly to the seller; TastySoxx doesn't hold any money and can't guarantee a refund. You can cancel an order as long as it hasn't been paid, and report problems to us at any time." },
-    { q: "Who sees my address?", a: "Only the seller of the order in question – and only the shipping address you enter for that order. Other users don't see it." },
-    { q: "Do I stay anonymous?", a: "On the platform you only appear under your username. For shipping, however, the seller needs an address where you receive mail." },
-  ],
-};
-
 export default async function ShippingGuide() {
-  const { t, locale } = await getT(info);
-  const c = locale === "en" ? EN : DE;
+  const { t } = await getT(info);
+  const c = DE;
   return (
     <Guide eyebrow={t("help.guide")} title={t("guide.ship")} intro={c.intro} sections={c.sections}
       faqTitle={t("help.faqTitle")} faq={c.faq} back={{ href: "/hilfe", label: t("help.back") }}

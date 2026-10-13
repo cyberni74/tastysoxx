@@ -58,7 +58,7 @@ export default async function MessagesPage() {
                     <div className="flex items-center gap-1.5 font-semibold">
                       <span className="truncate">{name}</span>{other?.verified && <VerifiedBadge />}
                       <span className="ml-auto shrink-0 text-xs font-normal text-muted" title={dateFmt.format(new Date(c.last_message_at))}>
-                        {isOnline(c.last_message_at) ? t("msg.justNow") : timeAgo(c.last_message_at, locale)}
+                        {isOnline(c.last_message_at) ? t("msg.justNow") : timeAgo(c.last_message_at)}
                       </span>
                     </div>
                     <div className="truncate text-sm text-muted">
