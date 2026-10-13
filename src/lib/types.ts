@@ -1,6 +1,13 @@
 export type Role = "buyer" | "seller";
-export type Category = "sneaker" | "sport" | "knie" | "nylon";
-export type Material = "Baumwolle" | "Wolle" | "Nylon" | "Synthetik";
+export type Department = "socken" | "slips" | "bhs";
+export type Category =
+  | "sneaker" | "sport" | "knie" | "nylon" | "strumpfhose"
+  | "slip" | "string" | "hipster"
+  | "bh" | "sport-bh" | "bralette";
+export type Material = "Baumwolle" | "Wolle" | "Nylon" | "Synthetik" | "Spitze" | "Seide" | "Mikrofaser";
+export type Color = "" | "schwarz" | "weiss" | "grau" | "beige" | "rosa" | "rot" | "blau" | "gruen" | "lila" | "bunt";
+export type Condition = "leicht" | "normal" | "intensiv";
+export type ReportReason = "minderjaehrig" | "illegal" | "betrug" | "belaestigung" | "falsche_angaben" | "sonstiges";
 export type ListingStatus = "active" | "reserved" | "sold" | "hidden";
 export type OrderStatus = "pending_payment" | "paid" | "shipped" | "completed" | "cancelled";
 
@@ -26,7 +33,12 @@ export interface Listing {
   title: string;
   description: string;
   category: Category;
+  /** generated in the DB from category */
+  department: Department;
   material: Material;
+  size: string;
+  color: Color;
+  condition: Condition;
   wear_days: number;
   price_cents: number;
   images: string[];
@@ -92,5 +104,17 @@ export interface Message {
   conversation_id: string;
   sender_id: string;
   body: string;
+  created_at: string;
+}
+
+export interface Report {
+  id: string;
+  reporter_id: string | null;
+  listing_id: string | null;
+  profile_id: string | null;
+  reason: ReportReason;
+  details: string;
+  contact_email: string | null;
+  status: "open" | "reviewed" | "closed";
   created_at: string;
 }

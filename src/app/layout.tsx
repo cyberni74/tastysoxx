@@ -16,12 +16,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const en = (await getLocale()) === "en";
   return {
     title: {
-      default: en ? "TastySoxx – Buy & sell worn socks discreetly" : "TastySoxx – Getragene Socken diskret kaufen & verkaufen",
-      template: "%s · TastySoxx",
+      default: en ? "Buy worn socks, panties & bras | TastySoxx" : "Getragene Socken, Slips & BHs kaufen | TastySoxx",
+      template: "%s | TastySoxx",
     },
     description: en
-      ? "Marketplace for worn socks: verified sellers, discreet shipping, private chat. Adults 18+ only."
-      : "Marktplatz für getragene Socken: verifizierte Verkäuferinnen, diskreter Versand, privater Chat. Nur ab 18.",
+      ? "Marketplace for worn socks, panties and bras: verified sellers, private chat, neutral packaging. Adults 18+ only."
+      : "Marktplatz für getragene Socken, Slips und BHs: verifizierte Verkäuferinnen, privater Chat, neutrale Verpackung. Nur ab 18.",
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://tastysoxx.com"),
     robots: { index: true, follow: true },
   };

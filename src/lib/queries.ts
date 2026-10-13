@@ -1,13 +1,18 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ListingWithSeller, SellerStats } from "./types";
-import { WEAR_FILTERS } from "./constants";
+import { CATEGORIES, COLORS, CONDITIONS, MATERIALS, WEAR_FILTERS } from "./constants";
 
 export const LISTING_SELECT =
   "*, seller:profiles!listings_seller_id_fkey(id, username, verified, country, avatar_url, last_active)";
 
 export interface ShopFilters {
+  abteilung?: string; // department id (socken|slips|bhs)
   kat?: string;
+  material?: string;
+  farbe?: string;
+  groesse?: string;
+  zustand?: string;
   q?: string;
   verifiziert?: string; // "1"
   dauer?: string; // WEAR_FILTERS id
@@ -19,7 +24,13 @@ export async function fetchListings(sb: SupabaseClient, f: ShopFilters, limit = 
     ? LISTING_SELECT.replace("seller:profiles!listings_seller_id_fkey(", "seller:profiles!listings_seller_id_fkey!inner(")
     : LISTING_SELECT;
   let query = sb.from("listings").select(sellerJoin).eq("status", "active");
-  if (f.kat) query = query.eq("category", f.kat);
+  if (f.abteilung && ["socken", "slips", "bhs"].includes(f.abteilung)) query = query.eq("department", f.abteilung);
+  if (f.kat && CATEGORIES.some((c) => c.id === f.kat)) query = query.eq("category", f.kat);
+  if (f.material && (MATERIALS as string[]).includes(f.material)) query = query.eq("material", f.material);
+  if (f.farbe && (COLORS as string[]).includes(f.farbe)) query = query.eq("color", f.farbe);
+  if (f.zustand && (CONDITIONS as string[]).includes(f.zustand)) query = query.eq("condition", f.zustand);
+  const size = f.groesse?.trim().replace(/[%,()]/g, "");
+  if (size) query = query.ilike("size", `%${size}%`);
   if (f.verifiziert === "1") query = query.eq("seller.verified", true);
   const wear = WEAR_FILTERS.find((w) => w.id === f.dauer);
   if (wear) query = query.gte("wear_days", wear.min).lte("wear_days", wear.max);

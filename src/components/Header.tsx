@@ -10,10 +10,12 @@ import { common } from "@/i18n/messages/common";
 import type { Profile } from "@/lib/types";
 
 const NAV = [
-  { href: "/shop", key: "nav.shop" },
+  { href: "/getragene-socken", key: "deptShort.socken" },
+  { href: "/getragene-slips", key: "deptShort.slips" },
+  { href: "/getragene-bhs", key: "deptShort.bhs" },
   { href: "/verkaeufer", key: "nav.sellers" },
-  { href: "/faq", key: "nav.faq" },
-  { href: "/kontakt", key: "nav.contact" },
+  { href: "/verkaufen", key: "nav.sell" },
+  { href: "/hilfe", key: "nav.help" },
 ] as const;
 
 export function Header({ profile }: { profile: Profile | null }) {
@@ -26,18 +28,18 @@ export function Header({ profile }: { profile: Profile | null }) {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-bg/90 backdrop-blur">
       <div className="wrap flex h-16 items-center gap-3">
-        <button className="grid size-10 place-items-center rounded-full border border-line bg-surface md:hidden" aria-label={t("nav.menu")} onClick={() => setOpen(!open)}>
+        <button className="grid size-10 place-items-center rounded-full border border-line bg-surface lg:hidden" aria-label={t("nav.menu")} onClick={() => setOpen(!open)}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
         <Logo compact />
-        <nav className="ml-2 hidden gap-1 md:flex" aria-label="Main">
+        <nav className="ml-1 hidden gap-0.5 lg:flex" aria-label="Main">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="rounded-lg px-3 py-2 font-medium text-muted hover:bg-surface-2 hover:text-fg">{t(n.key)}</Link>
+            <Link key={n.href} href={n.href} className="rounded-lg px-2.5 py-2 font-medium text-muted hover:bg-surface-2 hover:text-fg">{t(n.key)}</Link>
           ))}
         </nav>
         <form
           className="ml-auto flex h-10 min-w-0 max-w-sm flex-1 items-center gap-2 rounded-full border border-line bg-surface px-3.5"
-          onSubmit={(e) => { e.preventDefault(); router.push(`/shop?q=${encodeURIComponent(q.trim())}`); }}
+          onSubmit={(e) => { e.preventDefault(); router.push(`/marktplatz?q=${encodeURIComponent(q.trim())}`); }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
           <input id="header-search" value={q} onChange={(e) => setQ(e.target.value)} type="search" placeholder={t("nav.search")} className="w-full min-w-0 bg-transparent outline-none" aria-label={t("nav.searchLabel")} />
@@ -54,7 +56,7 @@ export function Header({ profile }: { profile: Profile | null }) {
         </Link>
       </div>
       {open && (
-        <nav className="wrap grid border-t border-line py-2 md:hidden" onClick={() => setOpen(false)}>
+        <nav className="wrap grid border-t border-line py-2 lg:hidden" onClick={() => setOpen(false)}>
           {NAV.map((n) => <Link key={n.href} href={n.href} className="py-2.5 font-medium">{t(n.key)}</Link>)}
           <Link href={profile ? "/konto" : "/anmelden"} className="py-2.5 font-medium">{profile ? t("nav.account") : t("nav.login")}</Link>
           {profile?.role === "seller" && <Link href="/dashboard" className="py-2.5 font-medium">{t("nav.dashboard")}</Link>}
