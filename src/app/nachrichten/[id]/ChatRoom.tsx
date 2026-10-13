@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 import { getBrowserClient } from "@/lib/supabase/client";
 import type { Message } from "@/lib/types";
 import { useLocale, useT } from "@/i18n/client";
@@ -28,15 +29,25 @@ export function ChatRoom({ conversationId, meId, initial }: { conversationId: st
   useEffect(() => {
     const supabase = getBrowserClient();
     if (!supabase) return;
-    const channel = supabase
-      .channel(`messages:${conversationId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
-        (payload: { new: Message }) => setMessages((prev) => mergeMessage(prev, payload.new)),
-      )
-      .subscribe();
-    return () => { void supabase.removeChannel(channel); };
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    let cancelled = false;
+    // Realtime applies RLS, so it needs the user's token before subscribing.
+    void supabase.auth.getSession().then(async ({ data }: { data: { session: Session | null } }) => {
+      if (cancelled) return;
+      if (data.session) await supabase.realtime.setAuth(data.session.access_token);
+      channel = supabase
+        .channel(`messages:${conversationId}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
+          (payload: { new: Message }) => setMessages((prev) => mergeMessage(prev, payload.new)),
+        )
+        .subscribe();
+    });
+    return () => {
+      cancelled = true;
+      if (channel) void supabase.removeChannel(channel);
+    };
   }, [conversationId]);
 
   useEffect(() => {

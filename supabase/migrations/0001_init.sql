@@ -131,11 +131,12 @@ declare
 begin
   if uid is null then raise exception 'Nicht angemeldet'; end if;
   if coalesce(cardinality(listing_ids), 0) = 0 then raise exception 'Warenkorb ist leer'; end if;
+  -- lock first, then check, so two buyers cannot reserve the same item
+  perform 1 from listings where id = any(listing_ids) for update;
   if exists (select 1 from unnest(listing_ids) i where not exists
       (select 1 from listings l where l.id = i and l.status = 'active' and l.seller_id <> uid)) then
     raise exception 'Mindestens ein Artikel ist nicht mehr verfügbar';
   end if;
-  perform 1 from listings where id = any(listing_ids) for update;
   for s in select distinct seller_id from listings where id = any(listing_ids) loop
     insert into orders (buyer_id, seller_id, subtotal_cents, shipping_cents, ship_name, ship_street, ship_zip, ship_city, ship_country)
     select uid, s, sum(price_cents), shipping, ship_name, ship_street, ship_zip, ship_city, ship_country
