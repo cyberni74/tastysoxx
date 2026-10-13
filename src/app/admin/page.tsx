@@ -5,16 +5,23 @@ import { getSession } from "@/lib/supabase/server";
 import type { Profile } from "@/lib/types";
 import { Avatar, Empty, Flag, SetupNotice, VerifiedBadge } from "@/components/Bits";
 import { setVerified } from "./actions";
+import { getT } from "@/i18n/server";
+import { seller } from "@/i18n/messages/seller";
+import { INTL } from "@/i18n/config";
 
-export const metadata: Metadata = { title: "Admin", robots: { index: false } };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(seller);
+  return { title: t("meta.admin"), robots: { index: false } };
+}
 export const dynamic = "force-dynamic";
 
-const dateFmt = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium", timeZone: "Europe/Berlin" });
 
 export default async function AdminPage() {
   const { supabase, profile } = await getSession();
   if (!supabase) return <div className="wrap py-10"><SetupNotice /></div>;
   if (!profile?.is_admin) notFound();
+  const { t, locale } = await getT(seller);
+  const dateFmt = new Intl.DateTimeFormat(INTL[locale], { dateStyle: "medium", timeZone: "Europe/Berlin" });
 
   const { data } = await supabase
     .from("profiles").select("*").eq("role", "seller")
@@ -25,12 +32,12 @@ export default async function AdminPage() {
   return (
     <div className="wrap grid max-w-3xl gap-5 py-8">
       <div>
-        <p className="eyebrow">Admin</p>
-        <h1 className="text-3xl font-extrabold">Verkäuferinnen verifizieren</h1>
-        <p className="mt-1 text-sm text-muted">{sellers.length} Verkäuferinnen · {open} noch nicht verifiziert</p>
+        <p className="eyebrow">{t("admin.eyebrow")}</p>
+        <h1 className="text-3xl font-extrabold">{t("admin.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t("admin.summary", { n: sellers.length, open })}</p>
       </div>
       {sellers.length === 0 ? (
-        <Empty>Noch keine Verkäuferinnen registriert.</Empty>
+        <Empty>{t("admin.empty")}</Empty>
       ) : (
         <ul className="card divide-y divide-line overflow-hidden">
           {sellers.map((s) => (
@@ -41,11 +48,11 @@ export default async function AdminPage() {
                   <Link href={`/verkaeufer/${s.username}`} className="truncate hover:text-accent">{s.username}</Link>
                   {s.verified && <VerifiedBadge />}<Flag country={s.country} />
                 </div>
-                <div className="text-xs text-muted">seit {dateFmt.format(new Date(s.created_at))}</div>
+                <div className="text-xs text-muted">{t("admin.since", { d: dateFmt.format(new Date(s.created_at)) })}</div>
               </div>
               <form action={setVerified.bind(null, s.id, !s.verified)}>
                 <button className={s.verified ? "btn-ghost btn-sm" : "btn-primary btn-sm"}>
-                  {s.verified ? "Verifizierung entziehen" : "Verifizieren"}
+                  {s.verified ? t("admin.unverify") : t("admin.verify")}
                 </button>
               </form>
             </li>

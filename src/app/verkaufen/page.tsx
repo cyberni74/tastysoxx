@@ -1,65 +1,51 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getT } from "@/i18n/server";
+import { info } from "@/i18n/messages/info";
 
-export const metadata: Metadata = {
-  title: "Verkaufen",
-  description: "Getragene Socken auf TastySoxx verkaufen: Profil anlegen, verifizieren, Artikel einstellen. Nur ab 18.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(info);
+  return { title: t("meta.sell"), description: t("meta.sellDesc") };
+}
 
-const WHY = [
-  { t: "Kaufbereite Kundschaft", d: "Wer hier sucht, will kaufen. Kein Feilschen in Kommentarspalten." },
-  { t: "Du bestimmst", d: "Preis, Tragedauer, was du zeigst und mit wem du schreibst – alles deine Entscheidung." },
-  { t: "Anonym bleiben", d: "Nutze einen Fantasienamen. Deine Adresse sieht niemand, solange du sie nicht selbst teilst." },
-];
+const WHY = [1, 2, 3] as const;
+const STEPS = [1, 2, 3, 4] as const;
+const TIPS = [1, 2, 3, 4, 5] as const;
 
-const STEPS = [
-  { t: "Profil anlegen", d: "Registrieren, als Verkäuferin wählen und Alter (18+) bestätigen." },
-  { t: "Verifizieren", d: "Lass dein Profil prüfen und erhalte das blaue Häkchen. Verifizierte Profile verkaufen spürbar mehr." },
-  { t: "Artikel einstellen", d: "Bis zu 6 Fotos, Material, Tragedauer und Preis – fertig in wenigen Minuten." },
-  { t: "Verkaufen", d: "Bestellung kommt rein, du schickst Zahlungsdetails im Chat, bestätigst die Zahlung und versendest." },
-];
-
-const TIPS = [
-  "Keine Gesichter, Tattoos oder erkennbaren Hintergründe auf den Fotos.",
-  "Verwende als Absender eine Packstation oder einen neutralen Absender.",
-  "Gib keine privaten Kontaktdaten (Telefon, Social Media) im Chat heraus.",
-  "Versende erst, wenn die Zahlung wirklich eingegangen ist.",
-  "Melde auffällige Nachrichten sofort über Kontakt.",
-];
-
-export default function SellPage() {
+export default async function SellPage() {
+  const { t } = await getT(info);
   return (
     <div className="wrap grid gap-14 py-10">
       <section className="grid max-w-2xl gap-4">
-        <p className="eyebrow">Verkaufen auf TastySoxx</p>
-        <h1 className="text-4xl font-extrabold sm:text-5xl">Verdiene mit deinen getragenen Socken – diskret und sicher.</h1>
-        <p className="text-lg text-muted">Kostenlos starten. Du zahlst nur, wenn du verkaufst.</p>
+        <p className="eyebrow">{t("sell.eyebrow")}</p>
+        <h1 className="text-4xl font-extrabold sm:text-5xl">{t("sell.title")}</h1>
+        <p className="text-lg text-muted">{t("sell.lead")}</p>
         <div className="flex flex-wrap gap-2">
-          <Link href="/registrieren" className="btn-primary">Jetzt als Verkäuferin starten</Link>
-          <Link href="/faq" className="btn-ghost">Fragen &amp; Antworten</Link>
+          <Link href="/registrieren" className="btn-primary">{t("sell.cta")}</Link>
+          <Link href="/faq" className="btn-ghost">{t("sell.faq")}</Link>
         </div>
       </section>
 
       <section className="grid gap-4">
-        <h2 className="text-2xl font-bold">Warum TastySoxx?</h2>
+        <h2 className="text-2xl font-bold">{t("sell.whyTitle")}</h2>
         <div className="grid gap-3 sm:grid-cols-3">
-          {WHY.map((w) => (
-            <div key={w.t} className="card p-5">
-              <h3 className="text-lg font-bold">{w.t}</h3>
-              <p className="mt-1 text-sm text-muted">{w.d}</p>
+          {WHY.map((n) => (
+            <div key={n} className="card p-5">
+              <h3 className="text-lg font-bold">{t(`sell.why${n}.t`)}</h3>
+              <p className="mt-1 text-sm text-muted">{t(`sell.why${n}.d`)}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="grid gap-4">
-        <h2 className="text-2xl font-bold">So funktioniert&apos;s</h2>
+        <h2 className="text-2xl font-bold">{t("sell.howTitle")}</h2>
         <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s, i) => (
-            <li key={s.t} className="card grid content-start gap-2 p-5">
-              <span className="grid size-9 place-items-center rounded-full bg-accent font-display font-bold text-accent-fg">{i + 1}</span>
-              <h3 className="text-lg font-bold">{s.t}</h3>
-              <p className="text-sm text-muted">{s.d}</p>
+          {STEPS.map((n) => (
+            <li key={n} className="card grid content-start gap-2 p-5">
+              <span className="grid size-9 place-items-center rounded-full bg-accent font-display font-bold text-accent-fg">{n}</span>
+              <h3 className="text-lg font-bold">{t(`sell.step${n}.t`)}</h3>
+              <p className="text-sm text-muted">{t(`sell.step${n}.d`)}</p>
             </li>
           ))}
         </ol>
@@ -67,28 +53,25 @@ export default function SellPage() {
 
       <section className="grid gap-6 md:grid-cols-2">
         <div className="card grid content-start gap-3 p-6">
-          <h2 className="text-2xl font-bold">Gebühren</h2>
+          <h2 className="text-2xl font-bold">{t("sell.feesTitle")}</h2>
           <p className="font-display text-4xl font-extrabold text-accent">10 %</p>
-          <p className="text-muted">
-            Provision auf den Artikelpreis, nur bei erfolgreichem Verkauf. Einstellen ist kostenlos, keine Grundgebühr.
-            Die Versandkosten (4,90 €) zahlt die Käuferin bzw. der Käufer.
-          </p>
-          <p className="rounded-xl bg-accent-soft p-3 text-sm">Aktuelle Konditionen – Änderungen kündigen wir rechtzeitig per E-Mail an.</p>
+          <p className="text-muted">{t("sell.feesText")}</p>
+          <p className="rounded-xl bg-accent-soft p-3 text-sm">{t("sell.feesNote")}</p>
         </div>
         <div className="card grid content-start gap-3 p-6">
-          <h2 className="text-2xl font-bold">Sicherheitstipps</h2>
+          <h2 className="text-2xl font-bold">{t("sell.tipsTitle")}</h2>
           <ul className="grid gap-2 text-sm">
-            {TIPS.map((t) => (
-              <li key={t} className="flex gap-2"><span className="text-ok" aria-hidden>✓</span><span>{t}</span></li>
+            {TIPS.map((n) => (
+              <li key={n} className="flex gap-2"><span className="text-ok" aria-hidden>✓</span><span>{t(`sell.tip${n}`)}</span></li>
             ))}
           </ul>
         </div>
       </section>
 
       <section className="card grid justify-items-start gap-3 bg-accent-soft p-6 sm:p-8">
-        <h2 className="text-2xl font-bold">Bereit?</h2>
-        <p className="max-w-xl text-muted">Profil in zwei Minuten anlegen. Verkaufen ist nur für volljährige Personen ab 18 Jahren erlaubt.</p>
-        <Link href="/registrieren" className="btn-primary">Kostenlos registrieren</Link>
+        <h2 className="text-2xl font-bold">{t("sell.readyTitle")}</h2>
+        <p className="max-w-xl text-muted">{t("sell.readyText")}</p>
+        <Link href="/registrieren" className="btn-primary">{t("sell.readyCta")}</Link>
       </section>
     </div>
   );

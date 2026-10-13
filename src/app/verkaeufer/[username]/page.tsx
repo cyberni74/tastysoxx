@@ -7,6 +7,11 @@ import type { ListingWithSeller, Profile, Review } from "@/lib/types";
 import { ListingCard } from "@/components/ListingCard";
 import { Avatar, Empty, Flag, LastActive, SetupNotice, Stars, VerifiedBadge } from "@/components/Bits";
 import { startConversation } from "@/app/nachrichten/actions";
+import { date } from "@/lib/format";
+import { BUILDS } from "@/lib/constants";
+import { getT } from "@/i18n/server";
+import { browse } from "@/i18n/messages/browse";
+import { common } from "@/i18n/messages/common";
 
 export const dynamic = "force-dynamic";
 
@@ -19,20 +24,20 @@ const loadSeller = cache(async (username: string) => {
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
   const { username } = await params;
-  const { seller } = await loadSeller(decodeURIComponent(username));
-  return { title: seller ? `${seller.username} – Verkäuferin` : "Verkäuferin" };
+  const [{ seller }, { t }] = await Promise.all([loadSeller(decodeURIComponent(username)), getT(browse)]);
+  return { title: seller ? t("profile.metaTitle", { name: seller.username }) : t("profile.metaFallback") };
 }
-
-const dateFmt = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "long", year: "numeric" });
 
 export default async function SellerProfilePage({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
-  const { supabase, user, seller } = await loadSeller(decodeURIComponent(username));
+  const [{ supabase, user, seller }, { t, locale }, { t: tc }] = await Promise.all([
+    loadSeller(decodeURIComponent(username)), getT(browse), getT(common),
+  ]);
 
   if (!supabase) {
     return (
       <div className="wrap py-12">
-        <h1 className="mb-6 text-3xl font-extrabold">Verkäuferin</h1>
+        <h1 className="mb-6 text-3xl font-extrabold">{t("profile.metaFallback")}</h1>
         <SetupNotice />
       </div>
     );
@@ -52,9 +57,12 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
     .sort((a, b) => order[a.status] - order[b.status]);
   const reviews = (reviewsRes.data ?? []) as Review[];
   const attrs = [
-    seller.age_range && { k: "Alter", v: `${seller.age_range} J.` },
-    seller.build && { k: "Figur", v: seller.build },
-    seller.shoe_size && { k: "Schuhgröße", v: seller.shoe_size },
+    seller.age_range && { k: t("profile.age"), v: tc("age", { a: seller.age_range }) },
+    seller.build && {
+      k: t("profile.build"),
+      v: (BUILDS as readonly string[]).includes(seller.build) ? tc(`build.${seller.build as (typeof BUILDS)[number]}`) : seller.build,
+    },
+    seller.shoe_size && { k: t("profile.shoeSize"), v: seller.shoe_size },
   ].filter(Boolean) as { k: string; v: string }[];
 
   return (
@@ -65,8 +73,8 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
           <h1 className="break-words text-3xl font-extrabold">{seller.username}</h1>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
             {seller.verified
-              ? <span className="flex items-center gap-1.5 font-semibold text-verified"><VerifiedBadge /> verifiziert</span>
-              : <span className="text-muted">nicht verifiziert</span>}
+              ? <span className="flex items-center gap-1.5 font-semibold text-verified"><VerifiedBadge /> {t("profile.verified")}</span>
+              : <span className="text-muted">{t("profile.notVerified")}</span>}
             <Flag country={seller.country} />
             <LastActive iso={seller.last_active} />
           </div>
@@ -84,17 +92,17 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
         </div>
         {!isSelf && (
           <form action={startConversation.bind(null, seller.id, undefined)} className="shrink-0">
-            <button type="submit" className="btn-primary w-full sm:w-auto">Nachricht schreiben</button>
+            <button type="submit" className="btn-primary w-full sm:w-auto">{t("profile.message")}</button>
           </form>
         )}
       </header>
 
       <section aria-labelledby="angebote-h">
         <h2 id="angebote-h" className="mb-5 text-2xl font-bold">
-          Angebote <span className="font-sans text-base font-semibold text-muted tabular-nums">({listings.length})</span>
+          {t("profile.listings")} <span className="font-sans text-base font-semibold text-muted tabular-nums">({listings.length})</span>
         </h2>
         {listings.length === 0 ? (
-          <Empty>{seller.username} hat gerade keine Angebote online.</Empty>
+          <Empty>{t("profile.noListings", { name: seller.username })}</Empty>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             {listings.map((l) => <ListingCard key={l.id} l={l} />)}
@@ -104,19 +112,19 @@ export default async function SellerProfilePage({ params }: { params: Promise<{ 
 
       <section aria-labelledby="bew-h">
         <h2 id="bew-h" className="mb-5 text-2xl font-bold">
-          Bewertungen <span className="font-sans text-base font-semibold text-muted tabular-nums">({reviews.length})</span>
+          {t("profile.reviews")} <span className="font-sans text-base font-semibold text-muted tabular-nums">({reviews.length})</span>
         </h2>
         {reviews.length === 0 ? (
-          <Empty>Noch keine Bewertungen.</Empty>
+          <Empty>{t("profile.noReviews")}</Empty>
         ) : (
           <ul className="flex flex-col gap-3">
             {reviews.map((r) => (
               <li key={r.id} className="card flex flex-col gap-1.5 p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <Stars rating={r.rating} />
-                  <time dateTime={r.created_at} className="text-xs text-muted">{dateFmt.format(new Date(r.created_at))}</time>
+                  <time dateTime={r.created_at} className="text-xs text-muted">{date(r.created_at, locale)}</time>
                 </div>
-                {r.body ? <p className="whitespace-pre-line break-words">{r.body}</p> : <p className="text-sm text-muted">Ohne Kommentar</p>}
+                {r.body ? <p className="whitespace-pre-line break-words">{r.body}</p> : <p className="text-sm text-muted">{t("profile.noComment")}</p>}
               </li>
             ))}
           </ul>

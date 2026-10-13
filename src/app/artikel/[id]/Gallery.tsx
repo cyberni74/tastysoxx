@@ -1,8 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Swatch } from "@/components/Bits";
+import { useT } from "@/i18n/client";
+import { browse } from "@/i18n/messages/browse";
 
 export function Gallery({ images, title, hue }: { images: string[]; title: string; hue: number }) {
+  const t = useT(browse);
   const [active, setActive] = useState(0);
   if (!images.length) return <Swatch hue={hue} className="aspect-square w-full rounded-2xl" />;
   const current = images[Math.min(active, images.length - 1)];
@@ -16,7 +19,7 @@ export function Gallery({ images, title, hue }: { images: string[]; title: strin
         <ul className="grid grid-cols-6 gap-2">
           {images.map((src, i) => (
             <li key={src + i}>
-              <button type="button" onClick={() => setActive(i)} aria-label={`Bild ${i + 1} anzeigen`} aria-pressed={i === active}
+              <button type="button" onClick={() => setActive(i)} aria-label={t("item.showImage", { n: i + 1 })} aria-pressed={i === active}
                 className={`block aspect-square w-full overflow-hidden rounded-lg border-2 ${i === active ? "border-accent" : "border-transparent opacity-80 hover:opacity-100"}`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt="" className="size-full object-cover" loading="lazy" />

@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { getT } from "@/i18n/server";
+import { info } from "@/i18n/messages/info";
 
-export const metadata: Metadata = { title: "AGB" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(info);
+  return { title: t("meta.terms") };
+}
 
 const SECTIONS: { h: string; p: string[] }[] = [
   {
@@ -70,14 +75,83 @@ const SECTIONS: { h: string; p: string[] }[] = [
   },
 ];
 
-export default function TermsPage() {
+const SECTIONS_EN: { h: string; p: string[] }[] = [
+  {
+    h: "§ 1 Scope",
+    p: [
+      "These terms and conditions apply to the use of the TastySoxx marketplace, operated by [Company name], [Address] (the “Operator”).",
+      "TastySoxx provides a platform on which sellers offer worn socks and buyers can purchase them. Purchase contracts are concluded exclusively between buyer and seller. The Operator is not a party to these contracts.",
+    ],
+  },
+  {
+    h: "§ 2 Registration and minimum age",
+    p: [
+      "Use is permitted only for adults aged 18 and over. Users must confirm their age when signing up. The Operator may request proof of age at any time and block accounts if in doubt.",
+      "Each person may only have one account. Login details must be kept secret.",
+    ],
+  },
+  {
+    h: "§ 3 Sellers' listings",
+    p: [
+      "Sellers are responsible for the accuracy of their information (photos, material, days worn, price). In particular, depictions of minors, pornographic content and listings that violate applicable law are prohibited.",
+      "The Operator may remove listings without giving reasons.",
+    ],
+  },
+  {
+    h: "§ 4 Orders and payment",
+    p: [
+      "By submitting an order, the buyer makes a binding offer; the items are reserved.",
+      "Payment is not processed by the Operator. The seller sends her payment details in the chat; payment is made directly to the seller. The Operator does not offer escrow or refund services.",
+      "As long as an order has not been confirmed as paid, either party can cancel it; the items then become available again.",
+    ],
+  },
+  {
+    h: "§ 5 Shipping",
+    p: [
+      "The seller ships in neutral packaging after receiving payment. The flat shipping fee is [€4.90] per seller.",
+    ],
+  },
+  {
+    h: "§ 6 Fees for sellers",
+    p: [
+      "A commission of currently [10 %] of the item price is charged for successful sales. Billing details: [billing terms].",
+    ],
+  },
+  {
+    h: "§ 7 Problems and reports",
+    p: [
+      "If there are problems with an order, users can contact support@tastysoxx.com. The Operator may mediate and block accounts, but is not obliged to refund payments.",
+    ],
+  },
+  {
+    h: "§ 8 Liability",
+    p: [
+      "The Operator is liable without limitation for intent and gross negligence. Otherwise, liability is limited to foreseeable damage typical for the contract. [Have liability clause reviewed]",
+    ],
+  },
+  {
+    h: "§ 9 Termination and blocking",
+    p: [
+      "Users can have their account deleted at any time. The Operator may block accounts that violate these terms.",
+    ],
+  },
+  {
+    h: "§ 10 Final provisions",
+    p: [
+      "The law of the Federal Republic of Germany applies. Place of jurisdiction, where permitted, is [City]. Last updated: [Date].",
+    ],
+  },
+];
+
+export default async function TermsPage() {
+  const { t, locale } = await getT(info);
+  const sections = locale === "en" ? SECTIONS_EN : SECTIONS;
   return (
     <article className="wrap grid max-w-2xl gap-6 py-10">
-      <h1 className="text-4xl font-extrabold">Allgemeine Geschäftsbedingungen</h1>
-      <p className="rounded-xl border border-accent bg-accent-soft p-3 text-sm font-semibold">
-        Platzhalter – vor dem Livegang rechtlich prüfen lassen. Alle Angaben in [eckigen Klammern] müssen ersetzt werden.
-      </p>
-      {SECTIONS.map((s) => (
+      <h1 className="text-4xl font-extrabold">{t("legal.termsTitle")}</h1>
+      <p className="rounded-xl border border-accent bg-accent-soft p-3 text-sm font-semibold">{t("legal.notice")}</p>
+      {locale === "en" && <p className="text-sm font-semibold">{t("legal.binding")}</p>}
+      {sections.map((s) => (
         <section key={s.h} className="grid gap-2">
           <h2 className="text-xl font-bold">{s.h}</h2>
           {s.p.map((t) => <p key={t} className="text-muted">{t}</p>)}

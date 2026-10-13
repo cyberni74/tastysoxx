@@ -5,36 +5,41 @@ import { getSession } from "@/lib/supabase/server";
 import { categoryById } from "@/lib/constants";
 import { eur, wearLabel } from "@/lib/format";
 import type { Listing, ListingStatus, Order } from "@/lib/types";
+import { getT } from "@/i18n/server";
+import { seller } from "@/i18n/messages/seller";
+import { common } from "@/i18n/messages/common";
 import { Empty, SetupNotice, Swatch } from "@/components/Bits";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(seller);
+  return { title: t("meta.dashboard") };
+}
 export const dynamic = "force-dynamic";
 
-const STATUS: Record<ListingStatus, { label: string; cls: string }> = {
-  active: { label: "Aktiv", cls: "bg-accent-soft text-accent" },
-  reserved: { label: "Reserviert", cls: "bg-surface-2 text-fg" },
-  sold: { label: "Verkauft", cls: "bg-fg text-bg" },
-  hidden: { label: "Versteckt", cls: "border border-line text-muted" },
+const STATUS_CLS: Record<ListingStatus, string> = {
+  active: "bg-accent-soft text-accent",
+  reserved: "bg-surface-2 text-fg",
+  sold: "bg-fg text-bg",
+  hidden: "border border-line text-muted",
 };
 
 export default async function DashboardPage() {
   const { supabase, user, profile } = await getSession();
   if (!supabase) return <div className="wrap py-10"><SetupNotice /></div>;
   if (!user) redirect("/anmelden?next=/dashboard");
+  const { t, locale } = await getT(seller);
+  const { t: tc } = await getT(common);
 
   if (profile?.role !== "seller") {
     return (
       <div className="wrap max-w-xl py-10">
         <div className="card grid gap-3 p-6">
-          <p className="eyebrow">Dashboard</p>
-          <h1 className="text-2xl font-extrabold">Du bist noch nicht als Verkäuferin registriert</h1>
-          <p className="text-muted">
-            Das Dashboard ist für Verkäuferinnen. Stelle in deinem Konto die Rolle auf „Verkäuferin“ um,
-            dann kannst du Artikel einstellen und Bestellungen verwalten.
-          </p>
+          <p className="eyebrow">{t("dash.eyebrow")}</p>
+          <h1 className="text-2xl font-extrabold">{t("dash.notSeller.title")}</h1>
+          <p className="text-muted">{t("dash.notSeller.text")}</p>
           <div className="flex flex-wrap gap-2">
-            <Link href="/konto" className="btn-primary">Zum Konto</Link>
-            <Link href="/verkaufen" className="btn-ghost">So funktioniert Verkaufen</Link>
+            <Link href="/konto" className="btn-primary">{t("dash.notSeller.account")}</Link>
+            <Link href="/verkaufen" className="btn-ghost">{t("dash.notSeller.how")}</Link>
           </div>
         </div>
       </div>
@@ -58,41 +63,40 @@ export default async function DashboardPage() {
     <div className="wrap grid gap-6 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="eyebrow">Dashboard</p>
-          <h1 className="text-3xl font-extrabold">Hallo {profile.username}</h1>
+          <p className="eyebrow">{t("dash.eyebrow")}</p>
+          <h1 className="text-3xl font-extrabold">{t("dash.hello", { name: profile.username })}</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href="/dashboard/verkaeufe" className="btn-ghost">Verkäufe</Link>
-          <Link href="/dashboard/artikel/neu" className="btn-primary">Neuer Artikel</Link>
+          <Link href="/dashboard/verkaeufe" className="btn-ghost">{t("dash.sales")}</Link>
+          <Link href="/dashboard/artikel/neu" className="btn-primary">{t("dash.new")}</Link>
         </div>
       </div>
 
       {!profile.verified && (
         <div className="rounded-2xl bg-accent-soft p-4 text-sm">
-          <b>Noch nicht verifiziert.</b> Verifizierte Verkäuferinnen bekommen das blaue Häkchen und verkaufen
-          deutlich mehr. Schreib uns über <Link href="/kontakt" className="font-semibold underline">Kontakt</Link>,
-          um die Verifizierung zu starten.
+          <b>{t("dash.unverified.bold")}</b> {t("dash.unverified.text")}{" "}
+          <Link href="/kontakt" className="font-semibold underline">{t("dash.unverified.link")}</Link>
+          {t("dash.unverified.end")}
         </div>
       )}
 
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
-        <Stat label="Aktive Artikel" value={String(activeCount)} />
-        <Stat label="Offene Bestellungen" value={String(openOrders)} href="/dashboard/verkaeufe" />
-        <Stat label="Umsatz" value={eur(revenue)} />
+        <Stat label={t("stat.active")} value={String(activeCount)} />
+        <Stat label={t("stat.open")} value={String(openOrders)} href="/dashboard/verkaeufe" />
+        <Stat label={t("stat.revenue")} value={eur(revenue, locale)} />
       </div>
 
       <section className="grid gap-3">
-        <h2 className="text-xl font-bold">Deine Artikel</h2>
+        <h2 className="text-xl font-bold">{t("dash.listings")}</h2>
         {listings.length === 0 ? (
           <Empty>
-            Du hast noch keine Artikel eingestellt.{" "}
-            <Link href="/dashboard/artikel/neu" className="font-semibold text-accent underline">Jetzt ersten Artikel anlegen</Link>
+            {t("dash.empty")}{" "}
+            <Link href="/dashboard/artikel/neu" className="font-semibold text-accent underline">{t("dash.emptyLink")}</Link>
           </Empty>
         ) : (
           <ul className="card divide-y divide-line overflow-hidden">
             {listings.map((l) => {
               const cat = categoryById(l.category);
-              const st = STATUS[l.status];
               return (
                 <li key={l.id} className="flex items-center gap-3 p-3">
                   <div className="size-14 shrink-0 overflow-hidden rounded-xl">
@@ -104,12 +108,12 @@ export default async function DashboardPage() {
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-semibold">{l.title}</div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted">
-                      <span className="font-semibold tabular-nums text-fg">{eur(l.price_cents)}</span>
-                      <span>{cat?.short} · {wearLabel(l.wear_days)}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${st.cls}`}>{st.label}</span>
+                      <span className="font-semibold tabular-nums text-fg">{eur(l.price_cents, locale)}</span>
+                      <span>{tc(`catShort.${l.category}`)} · {wearLabel(l.wear_days, locale)}</span>
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${STATUS_CLS[l.status]}`}>{tc(`listing.${l.status}`)}</span>
                     </div>
                   </div>
-                  <Link href={`/dashboard/artikel/${l.id}`} className="btn-ghost btn-sm shrink-0">Bearbeiten</Link>
+                  <Link href={`/dashboard/artikel/${l.id}`} className="btn-ghost btn-sm shrink-0">{t("dash.edit")}</Link>
                 </li>
               );
             })}

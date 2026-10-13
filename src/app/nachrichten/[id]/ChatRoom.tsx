@@ -1,9 +1,11 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getBrowserClient } from "@/lib/supabase/client";
 import type { Message } from "@/lib/types";
+import { useLocale, useT } from "@/i18n/client";
+import { seller } from "@/i18n/messages/seller";
+import { INTL } from "@/i18n/config";
 
-const timeFmt = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" });
 
 function mergeMessage(list: Message[], m: Message): Message[] {
   if (list.some((x) => x.id === m.id)) return list;
@@ -11,6 +13,12 @@ function mergeMessage(list: Message[], m: Message): Message[] {
 }
 
 export function ChatRoom({ conversationId, meId, initial }: { conversationId: string; meId: string; initial: Message[] }) {
+  const t = useT(seller);
+  const locale = useLocale();
+  const timeFmt = useMemo(
+    () => new Intl.DateTimeFormat(INTL[locale], { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Berlin" }),
+    [locale],
+  );
   const [messages, setMessages] = useState<Message[]>(initial);
   const [body, setBody] = useState("");
   const [sending, setSending] = useState(false);
@@ -39,16 +47,16 @@ export function ChatRoom({ conversationId, meId, initial }: { conversationId: st
   async function send() {
     const text = body.trim();
     if (!text || sending) return;
-    if (text.length > 2000) { setError("Höchstens 2000 Zeichen pro Nachricht."); return; }
+    if (text.length > 2000) { setError(t("chat.tooLong")); return; }
     const supabase = getBrowserClient();
-    if (!supabase) { setError("Datenbank nicht verbunden."); return; }
+    if (!supabase) { setError(t("act.noDb")); return; }
     setSending(true);
     setError(null);
     const { data, error: err } = await supabase
       .from("messages").insert({ conversation_id: conversationId, sender_id: meId, body: text })
       .select("*").single();
     setSending(false);
-    if (err || !data) { setError("Nachricht konnte nicht gesendet werden."); return; }
+    if (err || !data) { setError(t("chat.failed")); return; }
     setBody("");
     setMessages((prev) => mergeMessage(prev, data as Message));
   }
@@ -56,10 +64,10 @@ export function ChatRoom({ conversationId, meId, initial }: { conversationId: st
   return (
     <div className="card flex flex-col overflow-hidden">
       <p className="border-b border-line bg-accent-soft px-4 py-2 text-xs">
-        Teile keine Bankdaten oder Adressen außerhalb der Bestellung.
+        {t("chat.safety")}
       </p>
       <div ref={scroller} className="flex h-[58dvh] min-h-72 flex-col gap-2 overflow-y-auto p-3 sm:p-4" aria-live="polite">
-        {messages.length === 0 && <p className="m-auto text-sm text-muted">Noch keine Nachrichten. Schreib die erste!</p>}
+        {messages.length === 0 && <p className="m-auto text-sm text-muted">{t("chat.empty")}</p>}
         {messages.map((m) => {
           const mine = m.sender_id === meId;
           return (
@@ -81,11 +89,11 @@ export function ChatRoom({ conversationId, meId, initial }: { conversationId: st
           }}
           rows={1}
           maxLength={2000}
-          placeholder="Nachricht schreiben…"
-          aria-label="Nachricht"
+          placeholder={t("chat.placeholder")}
+          aria-label={t("chat.label")}
           className="input max-h-32 min-h-11 flex-1 resize-none"
         />
-        <button type="submit" className="btn-primary shrink-0" disabled={sending || !body.trim()}>Senden</button>
+        <button type="submit" className="btn-primary shrink-0" disabled={sending || !body.trim()}>{t("chat.send")}</button>
       </form>
       {error && <p className="px-3 pb-2 text-sm font-semibold text-danger" role="alert">{error}</p>}
     </div>

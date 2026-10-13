@@ -2,13 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/supabase/server";
-import { ORDER_STATUS_LABEL } from "@/lib/constants";
 import { eur } from "@/lib/format";
 import type { Order, OrderItem, OrderStatus } from "@/lib/types";
 import { Empty, SetupNotice } from "@/components/Bits";
 import { OrderActions } from "./OrderActions";
+import { getT } from "@/i18n/server";
+import { seller } from "@/i18n/messages/seller";
+import { common } from "@/i18n/messages/common";
+import { INTL } from "@/i18n/config";
 
-export const metadata: Metadata = { title: "Verkäufe" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(seller);
+  return { title: t("meta.sales") };
+}
 export const dynamic = "force-dynamic";
 
 type Row = Order & { items: OrderItem[] | null; buyer: { username: string } | null };
@@ -21,13 +27,15 @@ const PILL: Record<OrderStatus, string> = {
   cancelled: "border border-line text-muted",
 };
 
-const dateFmt = new Intl.DateTimeFormat("de-DE", { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/Berlin" });
 
 export default async function SalesPage() {
   const { supabase, user, profile } = await getSession();
   if (!supabase) return <div className="wrap py-10"><SetupNotice /></div>;
   if (!user) redirect("/anmelden?next=/dashboard/verkaeufe");
   if (profile?.role !== "seller") redirect("/dashboard");
+  const { t, locale } = await getT(seller);
+  const { t: tc } = await getT(common);
+  const dateFmt = new Intl.DateTimeFormat(INTL[locale], { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/Berlin" });
 
   const [{ data: ordersData }, { data: convData }] = await Promise.all([
     supabase.from("orders")
@@ -42,15 +50,15 @@ export default async function SalesPage() {
   return (
     <div className="wrap grid max-w-4xl gap-5 py-8">
       <div>
-        <Link href="/dashboard" className="text-sm text-muted hover:text-accent">← Dashboard</Link>
-        <h1 className="mt-1 text-3xl font-extrabold">Verkäufe</h1>
+        <Link href="/dashboard" className="text-sm text-muted hover:text-accent">{t("back.dashboard")}</Link>
+        <h1 className="mt-1 text-3xl font-extrabold">{t("sales.title")}</h1>
         <p className="mt-1 text-sm text-muted">
-          Schick der Käuferin bzw. dem Käufer deine Zahlungsdetails im Chat. Sobald das Geld da ist: „Zahlung erhalten“, nach dem Versand: „Als versendet markieren“.
+          {t("sales.intro")}
         </p>
       </div>
 
       {orders.length === 0 ? (
-        <Empty>Noch keine Bestellungen. Sobald jemand kauft, erscheint die Bestellung hier.</Empty>
+        <Empty>{t("sales.empty")}</Empty>
       ) : (
         <ul className="grid gap-4">
           {orders.map((o) => {
@@ -61,30 +69,30 @@ export default async function SalesPage() {
                   <div className="min-w-0">
                     <div className="font-display text-lg font-bold">{o.number}</div>
                     <div className="text-sm text-muted">
-                      {dateFmt.format(new Date(o.created_at))} · von <b className="text-fg">{o.buyer?.username ?? "Unbekannt"}</b>
+                      {dateFmt.format(new Date(o.created_at))} · {t("sales.from")} <b className="text-fg">{o.buyer?.username ?? t("unknown")}</b>
                     </div>
                   </div>
-                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${PILL[o.status]}`}>{ORDER_STATUS_LABEL[o.status]}</span>
+                  <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${PILL[o.status]}`}>{tc(`status.${o.status}`)}</span>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="grid content-start gap-1 text-sm">
-                    <div className="eyebrow mb-1">Artikel</div>
+                    <div className="eyebrow mb-1">{t("sales.items")}</div>
                     {(o.items ?? []).map((it) => (
                       <div key={it.listing_id} className="flex justify-between gap-3">
                         <span className="min-w-0 truncate">{it.title}</span>
-                        <span className="shrink-0 tabular-nums">{eur(it.price_cents)}</span>
+                        <span className="shrink-0 tabular-nums">{eur(it.price_cents, locale)}</span>
                       </div>
                     ))}
                     <div className="flex justify-between gap-3 text-muted">
-                      <span>Versand</span><span className="tabular-nums">{eur(o.shipping_cents)}</span>
+                      <span>{t("sales.shipping")}</span><span className="tabular-nums">{eur(o.shipping_cents, locale)}</span>
                     </div>
                     <div className="mt-1 flex justify-between gap-3 border-t border-line pt-1 font-semibold">
-                      <span>Gesamt</span><span className="tabular-nums">{eur(o.subtotal_cents + o.shipping_cents)}</span>
+                      <span>{t("sales.total")}</span><span className="tabular-nums">{eur(o.subtotal_cents + o.shipping_cents, locale)}</span>
                     </div>
                   </div>
                   <div className="text-sm">
-                    <div className="eyebrow mb-1">Lieferadresse</div>
+                    <div className="eyebrow mb-1">{t("sales.address")}</div>
                     <address className="rounded-xl bg-surface-2 p-3 not-italic leading-relaxed break-words">
                       {o.ship_name}<br />
                       {o.ship_street}<br />
@@ -96,7 +104,7 @@ export default async function SalesPage() {
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <OrderActions orderId={o.id} status={o.status} />
-                  {convId && <Link href={`/nachrichten/${convId}`} className="btn-ghost btn-sm">Käufer anschreiben</Link>}
+                  {convId && <Link href={`/nachrichten/${convId}`} className="btn-ghost btn-sm">{t("sales.message")}</Link>}
                 </div>
               </li>
             );

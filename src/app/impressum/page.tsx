@@ -1,52 +1,53 @@
 import type { Metadata } from "next";
+import { getT } from "@/i18n/server";
+import { info } from "@/i18n/messages/info";
 
-export const metadata: Metadata = { title: "Impressum" };
-
-function Notice() {
-  return (
-    <p className="rounded-xl border border-accent bg-accent-soft p-3 text-sm font-semibold">
-      Platzhalter – vor dem Livegang rechtlich prüfen lassen. Alle Angaben in [eckigen Klammern] müssen ersetzt werden.
-    </p>
-  );
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(info);
+  return { title: t("meta.imprint") };
 }
 
-export default function ImprintPage() {
+/** Each section: heading + lines (rendered with line breaks). */
+type Section = { h: string; lines: string[] };
+
+const DE: Section[] = [
+  { h: "Angaben gemäß § 5 DDG", lines: ["[Firmenname]", "[Rechtsform, z. B. UG (haftungsbeschränkt)]", "[Straße Hausnummer]", "[PLZ Ort]", "[Land]"] },
+  { h: "Vertreten durch", lines: ["[Vorname Nachname], Geschäftsführung"] },
+  { h: "Kontakt", lines: ["E-Mail: support@tastysoxx.com", "Telefon: [Telefonnummer]"] },
+  { h: "Registereintrag", lines: ["Registergericht: [Amtsgericht]", "Registernummer: [HRB-Nummer]"] },
+  { h: "Umsatzsteuer-ID", lines: ["Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: [USt-IdNr.]"] },
+  { h: "Verantwortlich für den Inhalt", lines: ["[Vorname Nachname], [Anschrift]"] },
+  { h: "Jugendschutz", lines: ["Dieses Angebot richtet sich ausschließlich an Personen ab 18 Jahren. Jugendschutzbeauftragte:r: [Name, Kontakt]"] },
+  { h: "Streitbeilegung", lines: ["Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. [Bitte prüfen]"] },
+];
+
+const EN: Section[] = [
+  { h: "Information pursuant to § 5 DDG (German Digital Services Act)", lines: ["[Company name]", "[Legal form, e.g. UG (haftungsbeschränkt)]", "[Street and number]", "[Postcode City]", "[Country]"] },
+  { h: "Represented by", lines: ["[First name Last name], Managing Director"] },
+  { h: "Contact", lines: ["Email: support@tastysoxx.com", "Phone: [Phone number]"] },
+  { h: "Commercial register", lines: ["Register court: [Local court]", "Registration number: [HRB number]"] },
+  { h: "VAT ID", lines: ["VAT identification number pursuant to § 27a UStG: [VAT ID]"] },
+  { h: "Responsible for content", lines: ["[First name Last name], [Address]"] },
+  { h: "Protection of minors", lines: ["This service is intended exclusively for persons aged 18 and over. Youth protection officer: [Name, contact]"] },
+  { h: "Dispute resolution", lines: ["We are neither willing nor obliged to take part in dispute resolution proceedings before a consumer arbitration board. [Please check]"] },
+];
+
+export default async function ImprintPage() {
+  const { t, locale } = await getT(info);
+  const sections = locale === "en" ? EN : DE;
   return (
-    <article className="wrap grid max-w-2xl gap-6 py-10 [&_h2]:mt-2 [&_h2]:text-xl [&_h2]:font-bold [&_p]:text-muted">
-      <h1 className="text-4xl font-extrabold">Impressum</h1>
-      <Notice />
-      <section className="grid gap-2">
-        <h2>Angaben gemäß § 5 DDG</h2>
-        <p>[Firmenname]<br />[Rechtsform, z. B. UG (haftungsbeschränkt)]<br />[Straße Hausnummer]<br />[PLZ Ort]<br />[Land]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Vertreten durch</h2>
-        <p>[Vorname Nachname], Geschäftsführung</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Kontakt</h2>
-        <p>E-Mail: support@tastysoxx.com<br />Telefon: [Telefonnummer]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Registereintrag</h2>
-        <p>Registergericht: [Amtsgericht]<br />Registernummer: [HRB-Nummer]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Umsatzsteuer-ID</h2>
-        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27a UStG: [USt-IdNr.]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Verantwortlich für den Inhalt</h2>
-        <p>[Vorname Nachname], [Anschrift]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Jugendschutz</h2>
-        <p>Dieses Angebot richtet sich ausschließlich an Personen ab 18 Jahren. Jugendschutzbeauftragte:r: [Name, Kontakt]</p>
-      </section>
-      <section className="grid gap-2">
-        <h2>Streitbeilegung</h2>
-        <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen. [Bitte prüfen]</p>
-      </section>
+    <article className="wrap grid max-w-2xl gap-6 py-10">
+      <h1 className="text-4xl font-extrabold">{t("legal.imprintTitle")}</h1>
+      <p className="rounded-xl border border-accent bg-accent-soft p-3 text-sm font-semibold">{t("legal.notice")}</p>
+      {locale === "en" && <p className="text-sm font-semibold">{t("legal.binding")}</p>}
+      {sections.map((s) => (
+        <section key={s.h} className="grid gap-2">
+          <h2 className="text-xl font-bold">{s.h}</h2>
+          <p className="text-muted">
+            {s.lines.map((l, i) => <span key={l}>{i > 0 && <br />}{l}</span>)}
+          </p>
+        </section>
+      ))}
     </article>
   );
 }

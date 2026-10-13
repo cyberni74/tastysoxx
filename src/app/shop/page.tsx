@@ -7,9 +7,15 @@ import type { ListingWithSeller } from "@/lib/types";
 import { ListingCard } from "@/components/ListingCard";
 import { Empty, SetupNotice } from "@/components/Bits";
 import { ShopFilters } from "./ShopFilters";
+import { getT } from "@/i18n/server";
+import { browse } from "@/i18n/messages/browse";
+import { common } from "@/i18n/messages/common";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Shop" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(browse);
+  return { title: t("shop.metaTitle") };
+}
 
 const str = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
 
@@ -23,6 +29,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
     sort: str(sp.sort),
   };
   const cat = categoryById(filters.kat);
+  const [{ t }, { t: tc }] = await Promise.all([getT(browse), getT(common)]);
 
   const { supabase } = await getSession();
   let listings: ListingWithSeller[] = [];
@@ -35,8 +42,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   return (
     <div className="wrap flex flex-col gap-6 py-8 sm:py-12">
       <header>
-        <p className="eyebrow">Shop</p>
-        <h1 className="mt-1 text-3xl font-extrabold sm:text-4xl">{cat ? cat.name : "Alle Angebote"}</h1>
+        <p className="eyebrow">{t("shop.eyebrow")}</p>
+        <h1 className="mt-1 text-3xl font-extrabold sm:text-4xl">{cat ? tc(`cat.${cat.id}`) : t("shop.all")}</h1>
       </header>
 
       <Suspense fallback={null}>
@@ -44,14 +51,14 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       </Suspense>
 
       {!supabase ? <SetupNotice /> : failed ? (
-        <Empty>Die Angebote konnten gerade nicht geladen werden. Bitte versuche es gleich noch einmal.</Empty>
+        <Empty>{t("shop.loadError")}</Empty>
       ) : (
         <section aria-labelledby="ergebnis-h" className="flex flex-col gap-4">
           <h2 id="ergebnis-h" className="font-sans text-sm font-semibold text-muted tabular-nums" aria-live="polite">
-            {listings.length === 1 ? "1 Angebot" : `${listings.length} Angebote`}
+            {listings.length === 1 ? t("shop.countOne") : t("shop.countMany", { n: listings.length })}
           </h2>
           {listings.length === 0 ? (
-            <Empty>{filtered ? "Keine Angebote für diese Filter. Probier andere Einstellungen." : "Noch keine Angebote online."}</Empty>
+            <Empty>{filtered ? t("shop.emptyFiltered") : t("shop.empty")}</Empty>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
               {listings.map((l) => <ListingCard key={l.id} l={l} />)}

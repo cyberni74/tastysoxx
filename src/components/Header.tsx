@@ -29,7 +29,7 @@ export function Header({ profile }: { profile: Profile | null }) {
         <button className="grid size-10 place-items-center rounded-full border border-line bg-surface md:hidden" aria-label={t("nav.menu")} onClick={() => setOpen(!open)}>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
-        <Logo />
+        <Logo compact />
         <nav className="ml-2 hidden gap-1 md:flex" aria-label="Main">
           {NAV.map((n) => (
             <Link key={n.href} href={n.href} className="rounded-lg px-3 py-2 font-medium text-muted hover:bg-surface-2 hover:text-fg">{t(n.key)}</Link>
@@ -42,7 +42,7 @@ export function Header({ profile }: { profile: Profile | null }) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
           <input id="header-search" value={q} onChange={(e) => setQ(e.target.value)} type="search" placeholder={t("nav.search")} className="w-full min-w-0 bg-transparent outline-none" aria-label={t("nav.searchLabel")} />
         </form>
-        <LanguageSwitch className="hidden sm:inline-flex" />
+        <div className="hidden sm:block"><LanguageSwitch /></div>
         <Link href={profile ? "/konto" : "/anmelden"} className="hidden size-10 place-items-center rounded-full border border-line bg-surface sm:grid" aria-label={profile ? t("nav.account") : t("nav.login")}>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4" /><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" /></svg>
         </Link>

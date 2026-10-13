@@ -5,9 +5,14 @@ import { fetchStats } from "@/lib/queries";
 import type { Profile, SellerStats } from "@/lib/types";
 import { SellerCard } from "@/components/SellerCard";
 import { Empty, SetupNotice } from "@/components/Bits";
+import { getT } from "@/i18n/server";
+import { browse } from "@/i18n/messages/browse";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Verkäuferinnen" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(browse);
+  return { title: t("sellers.metaTitle") };
+}
 
 const str = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) || undefined;
 
@@ -24,7 +29,7 @@ export default async function VerkaeuferPage({ searchParams }: { searchParams: P
   const verifiziert = str(sp.verifiziert) === "1";
   const sort = str(sp.sort) === "bewertungen" ? "bewertungen" : "aktiv";
 
-  const { supabase } = await getSession();
+  const [{ supabase }, { t }] = await Promise.all([getSession(), getT(browse)]);
   let sellers: Profile[] = [];
   let stats = new Map<string, SellerStats>();
   if (supabase) {
@@ -44,25 +49,25 @@ export default async function VerkaeuferPage({ searchParams }: { searchParams: P
   return (
     <div className="wrap flex flex-col gap-6 py-8 sm:py-12">
       <header>
-        <p className="eyebrow">Verkäuferinnen</p>
-        <h1 className="mt-1 text-3xl font-extrabold sm:text-4xl">Verkäuferinnen entdecken</h1>
-        <p className="mt-2 max-w-2xl text-muted">Sieh dir Profile, Bewertungen und Angebote an und schreib Verkäuferinnen direkt an.</p>
+        <p className="eyebrow">{t("sellers.eyebrow")}</p>
+        <h1 className="mt-1 text-3xl font-extrabold sm:text-4xl">{t("sellers.title")}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t("sellers.lead")}</p>
       </header>
 
-      <nav aria-label="Filter" className="flex flex-wrap gap-2">
-        <Link href={href(false, sort)} aria-current={!verifiziert ? "true" : undefined} className={!verifiziert ? "chip-on" : "chip"}>Alle</Link>
-        <Link href={href(true, sort)} aria-current={verifiziert ? "true" : undefined} className={verifiziert ? "chip-on" : "chip"}>Nur verifizierte</Link>
+      <nav aria-label={t("sellers.filter")} className="flex flex-wrap gap-2">
+        <Link href={href(false, sort)} aria-current={!verifiziert ? "true" : undefined} className={!verifiziert ? "chip-on" : "chip"}>{t("sellers.all")}</Link>
+        <Link href={href(true, sort)} aria-current={verifiziert ? "true" : undefined} className={verifiziert ? "chip-on" : "chip"}>{t("sellers.onlyVerified")}</Link>
         <span className="mx-1 hidden w-px self-stretch bg-line sm:block" aria-hidden />
-        <Link href={href(verifiziert, "aktiv")} aria-current={sort === "aktiv" ? "true" : undefined} className={sort === "aktiv" ? "chip-on" : "chip"}>Zuletzt aktiv</Link>
-        <Link href={href(verifiziert, "bewertungen")} aria-current={sort === "bewertungen" ? "true" : undefined} className={sort === "bewertungen" ? "chip-on" : "chip"}>Meiste Bewertungen</Link>
+        <Link href={href(verifiziert, "aktiv")} aria-current={sort === "aktiv" ? "true" : undefined} className={sort === "aktiv" ? "chip-on" : "chip"}>{t("sellers.sortActive")}</Link>
+        <Link href={href(verifiziert, "bewertungen")} aria-current={sort === "bewertungen" ? "true" : undefined} className={sort === "bewertungen" ? "chip-on" : "chip"}>{t("sellers.sortReviews")}</Link>
       </nav>
 
       {!supabase ? <SetupNotice /> : sellers.length === 0 ? (
-        <Empty>{verifiziert ? "Noch keine verifizierten Verkäuferinnen." : "Noch keine Verkäuferinnen registriert."}</Empty>
+        <Empty>{verifiziert ? t("sellers.emptyVerified") : t("sellers.empty")}</Empty>
       ) : (
         <section aria-labelledby="vk-liste-h">
           <h2 id="vk-liste-h" className="mb-3 font-sans text-sm font-semibold text-muted tabular-nums">
-            {sellers.length === 1 ? "1 Verkäuferin" : `${sellers.length} Verkäuferinnen`}
+            {sellers.length === 1 ? t("sellers.countOne") : t("sellers.countMany", { n: sellers.length })}
           </h2>
           <div className="grid gap-3 md:grid-cols-2">
             {sellers.map((p) => {

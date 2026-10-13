@@ -3,11 +3,16 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/supabase/server";
 import type { Listing } from "@/lib/types";
+import { getT } from "@/i18n/server";
+import { seller } from "@/i18n/messages/seller";
 import { SetupNotice } from "@/components/Bits";
 import { ListingControls, ListingForm } from "../ListingForm";
 import { deleteListing, setListingHidden, updateListing } from "../actions";
 
-export const metadata: Metadata = { title: "Artikel bearbeiten" };
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(seller);
+  return { title: t("meta.edit") };
+}
 export const dynamic = "force-dynamic";
 
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
@@ -16,6 +21,7 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
   if (!supabase) return <div className="wrap py-10"><SetupNotice /></div>;
   if (!user) redirect(`/anmelden?next=/dashboard/artikel/${id}`);
   if (profile?.role !== "seller") redirect("/dashboard");
+  const { t } = await getT(seller);
 
   const { data } = await supabase.from("listings").select("*").eq("id", id).eq("seller_id", user.id).maybeSingle();
   const listing = data as Listing | null;
@@ -26,10 +32,10 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
   return (
     <div className="wrap grid max-w-3xl gap-5 py-8">
       <div>
-        <Link href="/dashboard" className="text-sm text-muted hover:text-accent">← Dashboard</Link>
-        <h1 className="mt-1 text-3xl font-extrabold">Artikel bearbeiten</h1>
+        <Link href="/dashboard" className="text-sm text-muted hover:text-accent">{t("back.dashboard")}</Link>
+        <h1 className="mt-1 text-3xl font-extrabold">{t("meta.edit")}</h1>
         {listing.status !== "hidden" && (
-          <Link href={`/artikel/${listing.id}`} className="text-sm font-semibold text-accent underline">Im Shop ansehen</Link>
+          <Link href={`/artikel/${listing.id}`} className="text-sm font-semibold text-accent underline">{t("edit.viewInShop")}</Link>
         )}
       </div>
       {editable ? (
@@ -43,8 +49,8 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
         </>
       ) : (
         <div className="card p-5 text-muted">
-          Dieser Artikel ist {listing.status === "sold" ? "verkauft" : "reserviert"} und kann nicht mehr bearbeitet werden.{" "}
-          <Link href="/dashboard/verkaeufe" className="font-semibold text-accent underline">Zu den Verkäufen</Link>
+          {listing.status === "sold" ? t("edit.lockedSold") : t("edit.lockedReserved")}{" "}
+          <Link href="/dashboard/verkaeufe" className="font-semibold text-accent underline">{t("edit.toSales")}</Link>
         </div>
       )}
     </div>

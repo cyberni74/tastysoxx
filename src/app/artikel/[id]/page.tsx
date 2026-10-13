@@ -12,6 +12,9 @@ import { Avatar, Flag, LastActive, SetupNotice, Stars, VerifiedBadge } from "@/c
 import { startConversation } from "@/app/nachrichten/actions";
 import { BuyBox } from "./BuyBox";
 import { Gallery } from "./Gallery";
+import { getT } from "@/i18n/server";
+import { browse } from "@/i18n/messages/browse";
+import { common } from "@/i18n/messages/common";
 
 export const dynamic = "force-dynamic";
 
@@ -26,20 +29,18 @@ const loadListing = cache(async (id: string) => {
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const { listing } = await loadListing(id);
-  return { title: listing?.title ?? "Artikel" };
+  const [{ listing }, { t }] = await Promise.all([loadListing(id), getT(browse)]);
+  return { title: listing?.title ?? t("item.metaFallback") };
 }
-
-const STATUS_LABEL = { active: "Verfügbar", reserved: "Reserviert", sold: "Verkauft", hidden: "Ausgeblendet" } as const;
 
 export default async function ArtikelPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase, user, listing } = await loadListing(id);
+  const [{ supabase, user, listing }, { t, locale }, { t: tc }] = await Promise.all([loadListing(id), getT(browse), getT(common)]);
 
   if (!supabase) {
     return (
       <div className="wrap py-12">
-        <h1 className="mb-6 text-3xl font-extrabold">Artikel</h1>
+        <h1 className="mb-6 text-3xl font-extrabold">{t("item.metaFallback")}</h1>
         <SetupNotice />
       </div>
     );
@@ -60,9 +61,9 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
 
   return (
     <div className="wrap flex flex-col gap-12 py-8 sm:py-12">
-      <nav aria-label="Brotkrumen" className="text-sm text-muted">
-        <Link href="/shop" className="hover:text-fg">Shop</Link>
-        {cat && <> / <Link href={`/shop?kat=${cat.id}`} className="hover:text-fg">{cat.name}</Link></>}
+      <nav aria-label={t("item.breadcrumb")} className="text-sm text-muted">
+        <Link href="/shop" className="hover:text-fg">{tc("nav.shop")}</Link>
+        {cat && <> / <Link href={`/shop?kat=${cat.id}`} className="hover:text-fg">{tc(`cat.${cat.id}`)}</Link></>}
       </nav>
 
       <article className="grid gap-8 md:grid-cols-2 md:gap-10">
@@ -71,17 +72,17 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
         <div className="flex min-w-0 flex-col gap-5">
           <div className="flex flex-col gap-2">
             <span className={`w-fit rounded-full px-2.5 py-1 text-xs font-semibold ${listing.status === "active" ? "bg-accent-soft text-accent" : "bg-fg text-bg"}`}>
-              {STATUS_LABEL[listing.status]}
+              {listing.status === "active" ? t("item.statusActive") : tc(`listing.${listing.status}`)}
             </span>
             <h1 className="text-3xl font-extrabold break-words sm:text-4xl">{listing.title}</h1>
-            <p className="font-display text-3xl font-bold tabular-nums">{eur(listing.price_cents)}</p>
-            <p className="text-sm text-muted">zzgl. Versand</p>
+            <p className="font-display text-3xl font-bold tabular-nums">{eur(listing.price_cents, locale)}</p>
+            <p className="text-sm text-muted">{t("item.plusShipping")}</p>
           </div>
 
           <dl className="grid grid-cols-3 gap-2 text-sm">
-            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">Kategorie</dt><dd className="font-semibold">{cat?.name ?? listing.category}</dd></div>
-            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">Material</dt><dd className="font-semibold">{listing.material}</dd></div>
-            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">Getragen</dt><dd className="font-semibold">{wearLabel(listing.wear_days)}</dd></div>
+            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">{t("item.category")}</dt><dd className="font-semibold">{tc(`cat.${listing.category}`)}</dd></div>
+            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">{t("item.material")}</dt><dd className="font-semibold">{tc(`mat.${listing.material}`)}</dd></div>
+            <div className="rounded-xl bg-surface-2 p-3"><dt className="text-muted">{t("item.worn")}</dt><dd className="font-semibold">{wearLabel(listing.wear_days, locale)}</dd></div>
           </dl>
 
           <BuyBox
@@ -91,7 +92,7 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
               price_cents: listing.price_cents,
               image: listing.images[0] ?? null,
               seller_id: listing.seller_id,
-              seller_name: seller?.username ?? "Verkäuferin",
+              seller_name: seller?.username ?? t("item.seller"),
             }}
             available={listing.status === "active"}
             isOwner={isOwner}
@@ -99,14 +100,14 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
 
           {listing.description && (
             <section aria-labelledby="beschr-h">
-              <h2 id="beschr-h" className="mb-2 text-lg font-bold">Beschreibung</h2>
+              <h2 id="beschr-h" className="mb-2 text-lg font-bold">{t("item.description")}</h2>
               <p className="whitespace-pre-line break-words text-muted">{listing.description}</p>
             </section>
           )}
 
           {seller && (
             <section aria-labelledby="vk-h" className="card flex flex-col gap-4 p-4">
-              <h2 id="vk-h" className="sr-only">Verkäuferin</h2>
+              <h2 id="vk-h" className="sr-only">{t("item.seller")}</h2>
               <Link href={`/verkaeufer/${seller.username}`} className="flex items-center gap-3.5 hover:text-accent">
                 <Avatar url={seller.avatar_url} name={seller.username} size={56} />
                 <div className="flex min-w-0 flex-col gap-0.5">
@@ -121,7 +122,7 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
               </Link>
               {!isOwner && (
                 <form action={startConversation.bind(null, listing.seller_id, listing.id)}>
-                  <button type="submit" className="btn-ghost w-full">Verkäuferin anschreiben</button>
+                  <button type="submit" className="btn-ghost w-full">{t("item.contact")}</button>
                 </form>
               )}
             </section>
@@ -131,7 +132,7 @@ export default async function ArtikelPage({ params }: { params: Promise<{ id: st
 
       {more.length > 0 && (
         <section aria-labelledby="mehr-h">
-          <h2 id="mehr-h" className="mb-5 text-2xl font-bold">Weitere Artikel von {seller?.username ?? "dieser Verkäuferin"}</h2>
+          <h2 id="mehr-h" className="mb-5 text-2xl font-bold">{t("item.moreFrom", { name: seller?.username ?? t("item.seller") })}</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
             {more.map((l) => <ListingCard key={l.id} l={l} />)}
           </div>

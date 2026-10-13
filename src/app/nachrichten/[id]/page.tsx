@@ -5,8 +5,14 @@ import { getSession } from "@/lib/supabase/server";
 import type { Conversation, Message, Profile } from "@/lib/types";
 import { Avatar, LastActive, SetupNotice, VerifiedBadge } from "@/components/Bits";
 import { ChatRoom } from "./ChatRoom";
+import { getT } from "@/i18n/server";
+import { seller } from "@/i18n/messages/seller";
 
-export const metadata: Metadata = { title: "Chat" };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getT(seller);
+  return { title: t("meta.chat") };
+}
 export const dynamic = "force-dynamic";
 
 type Party = Pick<Profile, "id" | "username" | "avatar_url" | "verified" | "role" | "last_active">;
@@ -19,6 +25,7 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
   const { supabase, user } = await getSession();
   if (!supabase) return <div className="wrap py-10"><SetupNotice /></div>;
   if (!user) redirect(`/anmelden?next=/nachrichten/${id}`);
+  const { t } = await getT(seller);
 
   const { data } = await supabase
     .from("conversations")
@@ -34,12 +41,12 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
   const messages = ((msgData ?? []) as Message[]).reverse();
 
   const other = conv.buyer_id === user.id ? conv.seller : conv.buyer;
-  const name = other?.username ?? "Unbekannt";
+  const name = other?.username ?? t("unknown");
   const isSeller = other?.role === "seller" && other.id === conv.seller_id;
 
   return (
     <div className="wrap grid max-w-2xl gap-4 py-6">
-      <Link href="/nachrichten" className="text-sm text-muted hover:text-accent">← Alle Nachrichten</Link>
+      <Link href="/nachrichten" className="text-sm text-muted hover:text-accent">{t("chat.back")}</Link>
       <header className="card flex items-center gap-3 p-3.5">
         <Avatar url={other?.avatar_url ?? null} name={name} size={48} />
         <div className="min-w-0 flex-1">
@@ -52,11 +59,11 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
           <LastActive iso={other?.last_active} />
           {conv.listing && (
             <div className="truncate text-sm text-muted">
-              Zu: <Link href={`/artikel/${conv.listing.id}`} className="underline hover:text-accent">{conv.listing.title}</Link>
+              {t("chat.about")} <Link href={`/artikel/${conv.listing.id}`} className="underline hover:text-accent">{conv.listing.title}</Link>
             </div>
           )}
         </div>
-        {isSeller && <Link href={`/verkaeufer/${name}`} className="btn-ghost btn-sm hidden shrink-0 sm:inline-flex">Profil</Link>}
+        {isSeller && <Link href={`/verkaeufer/${name}`} className="btn-ghost btn-sm hidden shrink-0 sm:inline-flex">{t("chat.profile")}</Link>}
       </header>
       <ChatRoom conversationId={conv.id} meId={user.id} initial={messages} />
     </div>
