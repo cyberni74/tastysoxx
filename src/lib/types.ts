@@ -71,6 +71,7 @@ export interface Order {
   ship_country: string;
   created_at: string;
   updated_at: string;
+  shipped_at: string | null;
 }
 
 export interface OrderItem {

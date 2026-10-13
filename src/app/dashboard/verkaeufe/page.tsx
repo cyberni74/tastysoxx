@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/supabase/server";
-import { eur } from "@/lib/format";
+import { autoConfirmDate, date, eur } from "@/lib/format";
 import type { Order, OrderItem, OrderStatus } from "@/lib/types";
 import { Empty, SetupNotice } from "@/components/Bits";
 import { OrderActions } from "./OrderActions";
@@ -101,6 +101,10 @@ export default async function SalesPage() {
                     </address>
                   </div>
                 </div>
+
+                {o.status === "shipped" && o.shipped_at && (
+                  <p className="text-sm text-muted">{t("sales.autoConfirm", { date: date(autoConfirmDate(o.shipped_at)!.toISOString(), locale) })}</p>
+                )}
 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <OrderActions orderId={o.id} status={o.status} />

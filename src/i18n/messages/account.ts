@@ -152,6 +152,7 @@ export const account = defineMessages({
     "orders.hint.pending_payment": "Die Verkäuferin schickt dir die Zahlungsdetails im Chat.",
     "orders.hint.paid": "Zahlung bestätigt. Die Verkäuferin bereitet den Versand vor.",
     "orders.hint.shipped": "Unterwegs zu dir. Bitte bestätige den Erhalt, sobald das Paket da ist.",
+    "orders.autoConfirm": "Ohne Rückmeldung gilt der Erhalt am {date} automatisch als bestätigt. Danach kannst du bewerten.",
     "orders.chat": "Zum Chat",
     "orders.reviewed": "Bewertet – danke!",
     "orders.cancel": "Stornieren",

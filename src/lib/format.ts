@@ -31,3 +31,9 @@ export const wearLabel = (days: number) => {
   const t = translator(common);
   return days === 1 ? t("wearDays.one") : t("wearDays.many", { n: days });
 };
+
+export const AUTO_CONFIRM_DAYS = 14;
+
+/** Date on which a shipped order is confirmed automatically (matches auto_complete_orders() in the DB). */
+export const autoConfirmDate = (shippedAt: string | null | undefined) =>
+  shippedAt ? new Date(new Date(shippedAt).getTime() + AUTO_CONFIRM_DAYS * 86400000) : null;

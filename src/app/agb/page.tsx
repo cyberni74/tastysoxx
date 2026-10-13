@@ -38,6 +38,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
       "Mit Absenden einer Bestellung gibt die Käuferin bzw. der Käufer ein verbindliches Angebot ab; die Artikel werden reserviert.",
       "Die Bezahlung wird nicht über den Betreiber abgewickelt. Die Verkäuferin übermittelt ihre Zahlungsdetails im Chat; gezahlt wird direkt an die Verkäuferin. Der Betreiber bietet keine Treuhand- oder Erstattungsleistung an.",
       "Solange eine Bestellung nicht als bezahlt bestätigt ist, kann sie von beiden Seiten storniert werden; die Artikel werden dann wieder freigegeben.",
+      "Der Erhalt einer versendeten Bestellung wird von der Käuferin bzw. dem Käufer bestätigt. Erfolgt keine Bestätigung, gilt der Erhalt 14 Tage nach dem als „versendet“ markierten Zeitpunkt automatisch als bestätigt; danach kann bewertet werden. Dies ändert nichts an gesetzlichen Rechten und stellt keinen Käuferschutz dar.",
     ],
   },
   {

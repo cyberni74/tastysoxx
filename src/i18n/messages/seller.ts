@@ -71,6 +71,7 @@ export const seller = defineMessages({
     "sales.empty": "Noch keine Bestellungen. Sobald jemand kauft, erscheint die Bestellung hier.",
     "sales.from": "von", "sales.items": "Artikel", "sales.shipping": "Versand", "sales.total": "Gesamt",
     "sales.address": "Lieferadresse", "sales.message": "Käufer anschreiben",
+    "sales.autoConfirm": "Erhalt wird am {date} automatisch bestätigt, falls der Käufer nicht reagiert.",
     "order.paid": "Zahlung erhalten", "order.cancel": "Stornieren", "order.ship": "Als versendet markieren",
     "order.confirmCancel": "Bestellung wirklich stornieren? Die Artikel werden wieder freigegeben.",
     "order.invalid": "Ungültige Aktion.", "order.sellerOnly": "Nur Verkäuferinnen können Bestellungen bearbeiten.",

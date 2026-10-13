@@ -5,7 +5,7 @@ import { Empty, SetupNotice } from "@/components/Bits";
 import { account } from "@/i18n/messages/account";
 import { common } from "@/i18n/messages/common";
 import { getT } from "@/i18n/server";
-import { date, eur } from "@/lib/format";
+import { autoConfirmDate, date, eur } from "@/lib/format";
 import { getSession } from "@/lib/supabase/server";
 import type { Order, OrderItem, OrderStatus } from "@/lib/types";
 import { OrderActions, ReviewForm } from "./OrderActions";
@@ -108,6 +108,9 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
               </dl>
 
               {hint && <p className="text-sm text-muted">{t(hint)}</p>}
+              {o.status === "shipped" && o.shipped_at && (
+                <p className="text-sm text-muted">{t("orders.autoConfirm", { date: date(autoConfirmDate(o.shipped_at)!.toISOString(), locale) })}</p>
+              )}
 
               <div className="flex flex-wrap items-center gap-3">
                 <OrderActions orderId={o.id} status={o.status} />

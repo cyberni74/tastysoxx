@@ -23,7 +23,7 @@ const DE: { intro: string; sections: GuideSection[]; faq: QA[] } = {
           <li>Fragen klären – im Chat mit der Verkäuferin, bevor du bestellst.</li>
           <li>Bestellen – Lieferadresse angeben. Der Artikel ist ab jetzt für dich reserviert.</li>
           <li>Bezahlen – die Verkäuferin schickt dir ihre Zahlungsdetails im Chat, du zahlst direkt an sie.</li>
-          <li>Erhalten – nach dem Versand siehst du den Status „Versendet“. Bestätige den Erhalt und gib eine Bewertung ab.</li>
+          <li>Erhalten – nach dem Versand siehst du den Status „Versendet“. Bestätige den Erhalt und gib eine Bewertung ab. Reagierst du nicht, gilt der Erhalt 14 Tage nach Versand automatisch als bestätigt.</li>
         </ol>
       ),
     },
@@ -42,7 +42,7 @@ const DE: { intro: string; sections: GuideSection[]; faq: QA[] } = {
           <li><b>Wartet auf Zahlung</b> – bestellt und reserviert. Beide Seiten können noch stornieren.</li>
           <li><b>Bezahlt</b> – die Verkäuferin hat den Zahlungseingang bestätigt.</li>
           <li><b>Versendet</b> – das Paket ist unterwegs.</li>
-          <li><b>Abgeschlossen</b> – du hast den Erhalt bestätigt; jetzt kannst du bewerten.</li>
+          <li><b>Abgeschlossen</b> – du hast den Erhalt bestätigt (oder 14 Tage sind seit dem Versand vergangen); jetzt kannst du bewerten.</li>
           <li><b>Storniert</b> – die Bestellung wurde abgebrochen, der Artikel ist wieder verfügbar.</li>
         </ul>
       ),
