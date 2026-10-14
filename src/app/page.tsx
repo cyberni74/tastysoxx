@@ -11,7 +11,7 @@ import { common } from "@/i18n/messages/common";
 import type { ListingWithSeller, Profile, SellerStats } from "@/lib/types";
 import { ListingCard } from "@/components/ListingCard";
 import { SellerCard } from "@/components/SellerCard";
-import { Empty, SetupNotice, Swatch } from "@/components/Bits";
+import { Empty, SetupNotice } from "@/components/Bits";
 
 export const dynamic = "force-dynamic";
 
@@ -109,8 +109,9 @@ export default async function Home() {
           {DEPARTMENTS.map((d) => (
             <li key={d.id} className="card flex flex-col overflow-hidden">
               <Link href={d.path} className="group relative block aspect-[16/9] overflow-hidden">
-                <Swatch hue={d.hue} className="absolute inset-0 transition group-hover:scale-105" />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-3 pt-10 font-display text-xl font-bold text-white">
+                <Image src={d.image.src} alt={tc(`deptImg.${d.id}`)} width={d.image.width} height={d.image.height} sizes="(min-width: 1180px) 380px, (min-width: 640px) 33vw, 100vw"
+                  className="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
+                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-10 font-display text-xl font-bold text-white">
                   {tc(`dept.${d.id}`)}
                 </span>
               </Link>

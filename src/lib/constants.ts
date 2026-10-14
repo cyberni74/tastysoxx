@@ -4,10 +4,10 @@ export const SITE_NAME = "TastySoxx";
 export const SHIPPING_CENTS = 490; // must match create_orders() in the DB
 
 /** Indexable department landing pages. Slugs are part of the public URL structure. */
-export const DEPARTMENTS: { id: Department; path: string; sellPath: string; hue: number }[] = [
-  { id: "socken", path: "/getragene-socken", sellPath: "/verkaufen/socken", hue: 165 },
-  { id: "slips", path: "/getragene-slips", sellPath: "/verkaufen/slips", hue: 330 },
-  { id: "bhs", path: "/getragene-bhs", sellPath: "/verkaufen/bhs", hue: 270 },
+export const DEPARTMENTS: { id: Department; path: string; sellPath: string; hue: number; image: { src: string; width: number; height: number } }[] = [
+  { id: "socken", path: "/getragene-socken", sellPath: "/verkaufen/socken", hue: 165, image: { src: "/images/kategorien/getragene-socken-kaufen-nylonsocken-olivgruen.webp", width: 960, height: 581 } },
+  { id: "slips", path: "/getragene-slips", sellPath: "/verkaufen/slips", hue: 330, image: { src: "/images/kategorien/getragene-slips-kaufen-schwarzer-spitzen-slip.webp", width: 960, height: 444 } },
+  { id: "bhs", path: "/getragene-bhs", sellPath: "/verkaufen/bhs", hue: 270, image: { src: "/images/kategorien/getragene-bhs-kaufen-schwarzer-bh.webp", width: 960, height: 437 } },
 ];
 
 export const CATEGORIES: { id: Category; dept: Department; hue: number }[] = [

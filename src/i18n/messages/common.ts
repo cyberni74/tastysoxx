@@ -5,6 +5,7 @@ export const common = defineMessages({
   de: {
     "nav.marketplace": "Marktplatz", "nav.sell": "Verkaufen", "nav.help": "Hilfe",
     "dept.socken": "Getragene Socken & Strümpfe", "dept.slips": "Getragene Slips & Unterwäsche", "dept.bhs": "Getragene BHs & Büstenhalter",
+    "deptImg.socken": "Getragene Nylonsocken in Olivgrün", "deptImg.slips": "Schwarzer Spitzen-Slip, getragen", "deptImg.bhs": "Schwarzer BH, getragen",
     "deptShort.socken": "Socken", "deptShort.slips": "Slips", "deptShort.bhs": "BHs",
     "cat.strumpfhose": "Strumpfhosen & Strümpfe", "catShort.strumpfhose": "Strumpfhosen",
     "cat.slip": "Slips", "catShort.slip": "Slip", "cat.string": "Strings & Tangas", "catShort.string": "String",

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { getSession } from "@/lib/supabase/server";
 import { DEPARTMENTS } from "@/lib/constants";
 import { hasParams, pageMeta } from "@/lib/seo";
-import { Swatch } from "@/components/Bits";
+import Image from "next/image";
 import { getT } from "@/i18n/server";
 import { browse } from "@/i18n/messages/browse";
 import { common } from "@/i18n/messages/common";
@@ -38,8 +38,9 @@ export default async function MarktplatzPage({ searchParams }: Props) {
           {DEPARTMENTS.map((d) => (
             <li key={d.id}>
               <Link href={d.path} className="group relative flex h-28 items-end overflow-hidden rounded-2xl sm:h-36">
-                <Swatch hue={d.hue} className="absolute inset-0 transition group-hover:scale-105" />
-                <span className="relative w-full bg-gradient-to-t from-black/65 to-transparent p-3 pt-8 font-display text-lg font-bold text-white">
+                <Image src={d.image.src} alt={tc(`deptImg.${d.id}`)} width={d.image.width} height={d.image.height} sizes="(min-width: 1180px) 380px, (min-width: 640px) 33vw, 100vw"
+                  className="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
+                <span className="relative w-full bg-gradient-to-t from-black/70 to-transparent p-3 pt-8 font-display text-lg font-bold text-white">
                   {tc(`dept.${d.id}`)} →
                 </span>
               </Link>
