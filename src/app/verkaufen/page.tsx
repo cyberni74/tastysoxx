@@ -58,7 +58,7 @@ export default async function SellPage() {
       <section className="grid gap-6 md:grid-cols-2">
         <div className="card grid content-start gap-3 p-6">
           <h2 className="text-2xl font-bold">{t("sell.feesTitle")}</h2>
-          <p className="font-display text-4xl font-extrabold text-accent">10 %</p>
+          <p className="font-display text-4xl font-extrabold text-accent">0 €</p>
           <p className="text-muted">{t("sell.feesText")}</p>
           <p className="rounded-xl bg-accent-soft p-3 text-sm">{t("sell.feesNote")}</p>
         </div>

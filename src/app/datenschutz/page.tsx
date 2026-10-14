@@ -3,6 +3,10 @@ import Link from "next/link";
 import { getT } from "@/i18n/server";
 import { info } from "@/i18n/messages/info";
 import { pageMeta } from "@/lib/seo";
+import { getLegal, hasPlaceholders, operatorLine } from "@/lib/legal";
+import { LegalNotice } from "@/components/LegalNotice";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { t } = await getT(info);
@@ -13,15 +17,18 @@ type Section = { id: string; h: string; p?: string[]; ul?: string[]; after?: str
 
 /**
  * Describes what the shop actually does (Supabase Auth/DB/Storage in Frankfurt, Vercel hosting,
- * chat, orders, reports, consent cookies). Anything the operator must decide is in [eckigen Klammern].
+ * chat, orders, reports, consent cookies). Operator details come from getLegal() (env LEGAL_*).
  */
-const SECTIONS: Section[] = [
+const STAND = "14. Oktober 2026";
+
+function buildSections(l: ReturnType<typeof getLegal>): Section[] {
+  return [
   {
     id: "verantwortlicher",
     h: "1. Verantwortlicher",
     p: [
-      "Verantwortlich für die Datenverarbeitung auf dieser Website ist: [Firmenname bzw. Name], [Straße Hausnummer], [PLZ Ort], [Land]. E-Mail: support@tastysoxx.com.",
-      "Datenschutzbeauftragte:r: [Name und Kontakt oder „nicht benannt“].",
+      `Verantwortlich für die Datenverarbeitung auf dieser Website ist: ${operatorLine(l)}. E-Mail: ${l.email}.`,
+      l.dpo ? `Datenschutzbeauftragte:r: ${l.dpo}.` : "Wir haben keine:n Datenschutzbeauftragte:n benannt; dazu besteht keine gesetzliche Pflicht.",
     ],
   },
   {
@@ -60,7 +67,7 @@ const SECTIONS: Section[] = [
     h: "4. Besondere Kategorien personenbezogener Daten und deine Einwilligung",
     p: [
       "Schon die Nutzung eines Marktplatzes für getragene Wäsche kann Rückschlüsse auf das Sexualleben einer Person zulassen. Solche Daten sind nach Art. 9 DSGVO besonders geschützt. Wir verarbeiten sie nur auf Grundlage deiner ausdrücklichen Einwilligung (Art. 9 Abs. 2 lit. a DSGVO), die du bei der Registrierung mit einem eigenen Häkchen erteilst. Ohne diese Einwilligung können wir kein Konto anlegen.",
-      "Du kannst die Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du uns unter support@tastysoxx.com schreibst. Wir löschen dann dein Konto und deine Daten (soweit keine gesetzliche Aufbewahrungspflicht entgegensteht). Bis zum Widerruf bleibt die Verarbeitung rechtmäßig.",
+      `Du kannst die Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen, indem du dein Konto unter „Konto“ → „Konto löschen“ löschst oder uns unter ${l.email} schreibst. Wir löschen dann dein Konto und deine Daten (soweit keine gesetzliche Aufbewahrungspflicht entgegensteht). Bis zum Widerruf bleibt die Verarbeitung rechtmäßig.`,
       "Den Zeitpunkt deiner Einwilligung speichern wir als Nachweis.",
     ],
   },
@@ -72,7 +79,7 @@ const SECTIONS: Section[] = [
       "Altersbestätigung, Bearbeitung von Meldungen, Schutz vor Betrug und Missbrauch, Schutz Minderjähriger, Sicherheit und Stabilität der Website: berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO) und gesetzliche Pflichten (Art. 6 Abs. 1 lit. c DSGVO).",
       "Besondere Kategorien (Abschnitt 4): ausdrückliche Einwilligung (Art. 9 Abs. 2 lit. a DSGVO).",
       "Technisch notwendige Cookies und lokaler Speicher: § 25 Abs. 2 Nr. 2 TDDDG; Datenverarbeitung dabei nach Art. 6 Abs. 1 lit. b und f DSGVO.",
-      "Verifizierung von Verkäuferinnen auf deinen Wunsch: Vertragserfüllung und berechtigtes Interesse an vertrauenswürdigen Profilen (Art. 6 Abs. 1 lit. b und f DSGVO). [Ablauf festlegen: welche Nachweise verlangt werden und wann sie gelöscht werden, z. B. unmittelbar nach der Prüfung.]",
+      "Verifizierung von Verkäuferinnen auf deinen Wunsch: Vertragserfüllung und berechtigtes Interesse an vertrauenswürdigen Profilen (Art. 6 Abs. 1 lit. b und f DSGVO). Nachweise (z. B. Ausweis und Selfie) verwenden wir ausschließlich zur Prüfung von Alter und Identität und löschen sie unmittelbar nach Abschluss der Prüfung. Gespeichert wird nur das Ergebnis („verifiziert“).",
       "Systemmails (Bestätigung der E-Mail-Adresse, Passwort zurücksetzen): Vertragserfüllung (Art. 6 Abs. 1 lit. b DSGVO). Wir senden keine Werbe-E-Mails.",
     ],
   },
@@ -86,14 +93,14 @@ const SECTIONS: Section[] = [
     ],
     after: [
       "Weitere Empfänger sind die anderen Nutzer im oben beschriebenen Umfang sowie Behörden und Gerichte, wenn wir dazu gesetzlich verpflichtet sind oder es zur Verfolgung von Rechtsverstößen erforderlich ist.",
-      "Für den E-Mail-Versand nutzen wir derzeit den Dienst von Supabase. [Bei Wechsel zu einem eigenen Versanddienstleister hier ergänzen.]",
+      "Für den E-Mail-Versand nutzen wir derzeit den Dienst von Supabase. Wechseln wir zu einem eigenen Versanddienstleister, passen wir diese Erklärung an.",
     ],
   },
   {
     id: "drittland",
     h: "7. Übermittlung in Drittländer",
     p: [
-      "Supabase, Inc. und Vercel Inc. sitzen in den USA. Ein Zugriff aus den USA ist deshalb nicht ausgeschlossen. Die Übermittlung sichern wir durch Standardvertragsklauseln der EU-Kommission ab [und/oder die Zertifizierung des Anbieters nach dem EU-US Data Privacy Framework – bitte aktuell prüfen und eintragen]. Eine Kopie der Garantien erhältst du auf Anfrage.",
+      "Supabase, Inc. und Vercel Inc. sitzen in den USA. Ein Zugriff aus den USA ist deshalb nicht ausgeschlossen. Die Übermittlung ist durch die Standardvertragsklauseln der EU-Kommission (Art. 46 Abs. 2 lit. c DSGVO) abgesichert, die Bestandteil der Auftragsverarbeitungsverträge mit den Anbietern sind. Eine Kopie der Garantien erhältst du auf Anfrage.",
     ],
   },
   {
@@ -106,19 +113,19 @@ const SECTIONS: Section[] = [
       "„ts-cookie“: merkt sich, dass du den Cookie-Hinweis gesehen hast (bis zu 12 Monate).",
       "Lokaler Speicher „tastysoxx-cart“: dein Warenkorb. Er bleibt in deinem Browser und wird erst bei der Bestellung an uns übertragen. Du kannst ihn jederzeit in den Browser-Einstellungen löschen.",
       "Schriftarten werden von unserem eigenen Server ausgeliefert. Es besteht keine Verbindung zu Google oder anderen Schriftdiensten.",
-      "Server-Protokolle: Beim Aufruf der Website verarbeiten Vercel und Supabase technisch bedingt IP-Adresse, Zeitpunkt, aufgerufene Adresse und Browser-Angaben, um die Website bereitzustellen und Angriffe abzuwehren. Die Daten werden nach kurzer Zeit gelöscht [Aufbewahrungsdauer gemäß Anbieter-Einstellungen eintragen].",
+      "Server-Protokolle: Beim Aufruf der Website verarbeiten Vercel und Supabase technisch bedingt IP-Adresse, Zeitpunkt, aufgerufene Adresse und Browser-Angaben, um die Website bereitzustellen und Angriffe abzuwehren. Die Daten werden nur kurz gespeichert, in der Regel wenige Tage.",
     ],
   },
   {
     id: "speicherdauer",
     h: "9. Speicherdauer",
     ul: [
-      "Konto, Profil, Angebote und Nachrichten: bis zur Löschung deines Kontos. Du kannst dein Konto jederzeit selbst unter „Konto“ → „Konto löschen“ löschen (nur ohne offene Bestellungen) oder die Löschung unter support@tastysoxx.com verlangen. Dabei werden Profil, Angebote mit Fotos und alle Chats gelöscht.",
+      `Konto, Profil, Angebote und Nachrichten: bis zur Löschung deines Kontos. Du kannst dein Konto jederzeit selbst unter „Konto“ → „Konto löschen“ löschen (nur ohne offene Bestellungen) oder die Löschung unter ${l.email} verlangen. Dabei werden Profil, Angebote mit Fotos und alle Chats gelöscht.`,
       "Bewertungen und abgeschlossene Bestellungen: Sie bleiben nach der Löschung deines Kontos für die jeweils andere Seite erhalten (Betrag, Datum, Artikel, Bewertungstext), aber ohne Bezug zu deinem Konto. Deine Lieferadresse in Bestellungen wird bei der Löschung entfernt.",
-      "Bestelldaten ohne Personenbezug (Betrag, Datum, Artikel): solange sie für die Abwicklung, mögliche Ansprüche und gesetzliche Aufbewahrungspflichten erforderlich sind [Fristen prüfen, z. B. nach HGB und AO].",
-      "Meldungen: [Dauer festlegen, z. B. 12 Monate nach Abschluss der Bearbeitung], bei Verstößen länger, soweit zur Rechtsverfolgung nötig.",
+      "Bestelldaten ohne Personenbezug (Betrag, Datum, Artikel): solange sie für die Abwicklung, mögliche Ansprüche und gesetzliche Pflichten des Betreibers erforderlich sind.",
+      "Meldungen: 12 Monate nach Abschluss der Bearbeitung; bei Verstößen und laufenden Verfahren so lange, wie es zur Rechtsverfolgung nötig ist.",
       "Nachweis der Einwilligung und der Volljährigkeitsbestätigung: mit dem Konto, danach so lange, wie wir die Einwilligung nachweisen müssen.",
-      "Verifizierungsunterlagen: [Löschfrist festlegen].",
+      "Verifizierungsunterlagen: werden unmittelbar nach der Prüfung gelöscht (siehe Abschnitt 5).",
     ],
   },
   {
@@ -142,7 +149,7 @@ const SECTIONS: Section[] = [
       "Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft (Art. 7 Abs. 3)",
     ],
     after: [
-      "Schreib uns dazu an support@tastysoxx.com. Du hast außerdem das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, zum Beispiel bei der Behörde deines Wohnorts oder unseres Sitzes [zuständige Aufsichtsbehörde eintragen].",
+      `Schreib uns dazu an ${l.email}. Du hast außerdem das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, zum Beispiel bei der Behörde deines Wohnorts oder unseres Sitzes. Für uns zuständig ist: ${l.authority}.`,
     ],
   },
   {
@@ -158,16 +165,19 @@ const SECTIONS: Section[] = [
   {
     id: "aenderungen",
     h: "13. Änderungen",
-    p: ["Wir passen diese Erklärung an, wenn sich der Shop, die Dienstleister oder die Rechtslage ändern. Es gilt die jeweils hier veröffentlichte Fassung. Stand: [Datum]."],
+    p: [`Wir passen diese Erklärung an, wenn sich der Shop, die Dienstleister oder die Rechtslage ändern. Es gilt die jeweils hier veröffentlichte Fassung. Stand: ${STAND}.`],
   },
 ];
+}
 
 export default async function PrivacyPage() {
   const { t } = await getT(info);
+  const SECTIONS = buildSections(getLegal());
+  const all = SECTIONS.flatMap((s) => [s.h, ...(s.p ?? []), ...(s.ul ?? []), ...(s.after ?? [])]).join(" ");
   return (
     <article className="wrap grid max-w-2xl gap-6 py-10">
       <h1 className="text-4xl font-extrabold">{t("legal.privacyTitle")}</h1>
-      <p className="rounded-xl border border-accent bg-accent-soft p-3 text-sm font-semibold">{t("legal.notice")}</p>
+      {hasPlaceholders(all) && <LegalNotice>{t("legal.notice")}</LegalNotice>}
 
       <nav aria-label="Inhalt" className="card p-4 text-sm">
         <ol className="grid gap-1 sm:grid-cols-2">

@@ -4,7 +4,7 @@ import { defineMessages } from "../define";
 export const info = defineMessages({
   de: {
     "meta.sell": "Getragene Socken, Slips & BHs verkaufen",
-    "meta.sellDesc": "Getragene Socken, Slips und BHs auf TastySoxx verkaufen: Profil anlegen, verifizieren, Angebot einstellen. 10 % Provision, nur ab 18.",
+    "meta.sellDesc": "Getragene Socken, Slips und BHs auf TastySoxx verkaufen: Profil anlegen, verifizieren, Angebot einstellen. Derzeit kostenlos, nur ab 18.",
     "meta.help": "Hilfe & Ratgeber", "meta.helpDesc": "Hilfe zu TastySoxx: Kaufen und Verkaufen, Versand, Zahlung, Privatsphäre und Angebotsregeln.",
     "guide.buySell": "So funktioniert Kaufen und Verkaufen", "guide.ship": "Versand, Zahlung und Privatsphäre",
     "guide.rules": "Produktinformationen und Angebotsregeln",
@@ -26,8 +26,8 @@ export const info = defineMessages({
     "sell.step3.t": "Angebot einstellen", "sell.step3.d": "Bereich und Kategorie wählen, Größe, Material, Tragedauer, Zustand und Preis angeben, bis zu 6 Fotos hochladen.",
     "sell.step4.t": "Verkaufen", "sell.step4.d": "Bestellung kommt rein, du schickst deine Zahlungsdetails im Chat, bestätigst den Zahlungseingang und versendest.",
     "sell.feesTitle": "Gebühren",
-    "sell.feesText": "Provision auf den Artikelpreis, nur bei erfolgreichem Verkauf. Einstellen ist kostenlos, keine Grundgebühr. Die Versandpauschale (4,90 €) zahlt die Käuferin bzw. der Käufer.",
-    "sell.feesNote": "Aktuelle Konditionen – Änderungen kündigen wir rechtzeitig per E-Mail an.",
+    "sell.feesText": "Derzeit ist TastySoxx für Verkäuferinnen kostenlos: keine Grundgebühr und keine Provision. Die Zahlung läuft direkt zwischen dir und der Käuferin bzw. dem Käufer. Die Versandpauschale (4,90 €) zahlt die Käuferin bzw. der Käufer.",
+    "sell.feesNote": "Sollten wir Gebühren einführen, kündigen wir das mindestens 30 Tage vorher per E-Mail an.",
     "sell.rulesTitle": "Die wichtigsten Regeln",
     "sell.rule1": "Nur Personen ab 18 Jahren – Verkäuferinnen und Käufer:innen.",
     "sell.rule2": "Fotos zeigen das Produkt, keine Gesichter und keine expliziten Körperaufnahmen.",
