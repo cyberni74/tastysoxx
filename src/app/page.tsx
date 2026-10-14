@@ -93,7 +93,11 @@ export default async function Home() {
 
       {/* Promo band */}
       <section className="wrap pt-12">
-        <div className="flex flex-col items-start gap-4 rounded-3xl bg-accent px-6 py-8 text-accent-fg sm:flex-row sm:items-center sm:justify-between sm:px-10">
+        <div className="relative isolate flex flex-col items-start gap-4 overflow-hidden rounded-3xl bg-accent px-6 py-8 text-accent-fg sm:flex-row sm:items-center sm:justify-between sm:px-10 sm:py-16">
+          {/* decorative photo at 25 % opacity, text stays on top */}
+          <Image src="/images/mit-verkaeuferinnen-chatten-getragene-waesche.webp" alt="" aria-hidden width={1024} height={541}
+            sizes="(min-width: 1180px) 1152px, 100vw"
+            className="pointer-events-none absolute inset-0 -z-10 size-full object-cover object-[50%_28%] opacity-25" />
           <div>
             <h2 className="text-2xl font-bold sm:text-3xl">{t("home.promoTitle")}</h2>
             <p className="mt-1 opacity-85">{t("home.promoText")}</p>
