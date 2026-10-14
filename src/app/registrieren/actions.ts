@@ -42,6 +42,7 @@ export async function signUp(_prev: SignupState, formData: FormData): Promise<Si
     password: z.string().min(8, t("err.passwordMin")).max(72, t("err.passwordLong")),
     role: z.enum(["buyer", "seller"], { errorMap: () => ({ message: t("signup.errRole") }) }),
     adult: z.literal("on", { errorMap: () => ({ message: t("signup.errAdult") }) }),
+    sensitive: z.literal("on", { errorMap: () => ({ message: t("signup.errSensitive") }) }),
     terms: z.literal("on", { errorMap: () => ({ message: t("signup.errTerms") }) }),
   });
   const parsed = schema.safeParse({
@@ -50,6 +51,7 @@ export async function signUp(_prev: SignupState, formData: FormData): Promise<Si
     password: formData.get("password"),
     role: formData.get("role"),
     adult: formData.get("adult"),
+    sensitive: formData.get("sensitive"),
     terms: formData.get("terms"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
@@ -69,7 +71,8 @@ export async function signUp(_prev: SignupState, formData: FormData): Promise<Si
     email,
     password,
     options: {
-      data: { username, role, adult_confirmed: true },
+      // consent timestamps are kept as proof (Art. 7 Abs. 1 DSGVO)
+      data: { username, role, adult_confirmed: true, sensitive_consent_at: new Date().toISOString() },
       emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });

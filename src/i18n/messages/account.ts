@@ -52,6 +52,8 @@ export const account = defineMessages({
     "signup.roleBuyer": "Ich möchte kaufen",
     "signup.roleSeller": "Ich möchte verkaufen",
     "signup.adult": "Ich bin mindestens 18 Jahre alt.",
+    "signup.sensitive": "Ich willige ausdrücklich ein, dass TastySoxx meine Angaben und Aktivitäten (z. B. Profil, Angebote, Bestellungen, Nachrichten) verarbeitet, obwohl daraus Rückschlüsse auf mein Sexualleben möglich sein können. Ich kann diese Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen; Einzelheiten stehen in der Datenschutzerklärung.",
+    "signup.errSensitive": "Ohne diese Einwilligung können wir dein Konto nicht anlegen, weil schon die Nutzung des Marktplatzes Rückschlüsse auf dein Sexualleben zulassen kann.",
     "signup.termsA": "Ich akzeptiere die",
     "signup.terms": "AGB",
     "signup.termsAnd": "und die",

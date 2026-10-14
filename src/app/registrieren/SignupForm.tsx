@@ -61,6 +61,10 @@ export function SignupForm({ next }: { next: string }) {
         <span>{t("signup.adult")}</span>
       </label>
       <label className="flex items-start gap-2.5 text-sm">
+        <input type="checkbox" name="sensitive" required className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]" />
+        <span>{t("signup.sensitive")}</span>
+      </label>
+      <label className="flex items-start gap-2.5 text-sm">
         <input type="checkbox" name="terms" required className="mt-0.5 size-4 shrink-0 accent-[var(--accent)]" />
         <span>
           {t("signup.termsA")} <Link href="/agb" target="_blank" className="font-semibold text-accent underline">{t("signup.terms")}</Link>{" "}
