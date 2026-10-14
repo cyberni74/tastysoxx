@@ -33,7 +33,7 @@ export const common = defineMessages({
     "age.text": "TastySoxx richtet sich ausschließlich an Erwachsene. Mit „Ja“ bestätigst du, volljährig zu sein.",
     "age.yes": "Ja, ich bin 18+", "age.no": "Nein, verlassen",
     "cookie.title": "Cookies",
-    "cookie.text": "Wir verwenden nur technisch notwendige Cookies für den Login. Warenkorb und Altersbestätigung bleiben lokal in deinem Browser. Keine Tracking-Cookies.",
+    "cookie.text": "Wir verwenden nur technisch notwendige Cookies: für den Login und um dir diese Hinweise nicht jedes Mal zu zeigen. Keine Tracking-Cookies.",
     "cookie.ok": "Verstanden",
 
     "cat.sneaker": "Sneakersocken", "cat.sport": "Sportsocken", "cat.knie": "Kniestrümpfe", "cat.nylon": "Nylonsöckchen",

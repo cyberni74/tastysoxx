@@ -39,7 +39,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "5. Cookies",
     p: [
-      "Wir setzen nur technisch notwendige Cookies ein, um dich angemeldet zu halten. Warenkorb, Altersbestätigung und Cookie-Hinweis werden nur lokal in deinem Browser gespeichert (Local Storage) und nicht an uns übertragen. Es gibt keine Tracking- oder Werbe-Cookies. Eine Einwilligung ist dafür nicht erforderlich (§ 25 Abs. 2 TDDDG).",
+      "Wir setzen nur technisch notwendige Cookies ein, um dich angemeldet zu halten und um uns zu merken, dass du die Altersabfrage und den Cookie-Hinweis bestätigt hast (jeweils bis zu 12 Monate). Der Warenkorb wird nur lokal in deinem Browser gespeichert (Local Storage) und nicht an uns übertragen. Es gibt keine Tracking- oder Werbe-Cookies. Eine Einwilligung ist dafür nicht erforderlich (§ 25 Abs. 2 TDDDG).",
     ],
   },
   {
