@@ -51,7 +51,7 @@ export default async function Home() {
   return (
     <div className="pb-16">
       {/* Hero */}
-      <section className="wrap grid items-center gap-10 py-12 md:grid-cols-[1.15fr_1fr] md:py-20">
+      <section className="wrap grid items-center gap-8 pb-10 pt-5 md:grid-cols-[1.15fr_1fr] md:gap-10 md:pb-16 md:pt-10">
         <div className="flex flex-col gap-5">
           <p className="eyebrow">{t("home.eyebrow")}</p>
           <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
