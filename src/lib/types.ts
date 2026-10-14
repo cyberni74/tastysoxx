@@ -59,8 +59,9 @@ export interface SellerStats {
 export interface Order {
   id: string;
   number: string;
-  buyer_id: string;
-  seller_id: string;
+  /** null once the account was deleted */
+  buyer_id: string | null;
+  seller_id: string | null;
   status: OrderStatus;
   subtotal_cents: number;
   shipping_cents: number;
@@ -76,7 +77,8 @@ export interface Order {
 
 export interface OrderItem {
   order_id: string;
-  listing_id: string;
+  /** null once the listing was deleted */
+  listing_id: string | null;
   title: string;
   price_cents: number;
 }
@@ -84,7 +86,8 @@ export interface OrderItem {
 export interface Review {
   id: string;
   order_id: string;
-  buyer_id: string;
+  /** null once the reviewer's account was deleted */
+  buyer_id: string | null;
   seller_id: string;
   rating: number;
   body: string;

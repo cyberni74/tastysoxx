@@ -6,6 +6,7 @@ import { account } from "@/i18n/messages/account";
 import { getT } from "@/i18n/server";
 import { getSession } from "@/lib/supabase/server";
 import { ProfileForm } from "./ProfileForm";
+import { DeleteAccount } from "./loeschen/DeleteAccount";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,8 @@ export default async function AccountPage() {
         <p className="mb-5 mt-1 text-sm text-muted">{isSeller ? t("konto.profileSeller") : t("konto.profileBuyer")}</p>
         <ProfileForm profile={profile} />
       </section>
+
+      <DeleteAccount />
 
       <p className="mt-6 text-sm text-muted">
         {t("konto.signedInAs")} <span className="break-all">{user.email}</span> ·{" "}

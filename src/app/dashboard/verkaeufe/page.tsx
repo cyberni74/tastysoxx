@@ -62,7 +62,7 @@ export default async function SalesPage() {
       ) : (
         <ul className="grid gap-4">
           {orders.map((o) => {
-            const convId = convByBuyer.get(o.buyer_id);
+            const convId = o.buyer_id ? convByBuyer.get(o.buyer_id) : undefined;
             return (
               <li key={o.id} className="card grid gap-4 p-4 sm:p-5">
                 <div className="flex flex-wrap items-start justify-between gap-2">
@@ -78,8 +78,8 @@ export default async function SalesPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="grid content-start gap-1 text-sm">
                     <div className="eyebrow mb-1">{t("sales.items")}</div>
-                    {(o.items ?? []).map((it) => (
-                      <div key={it.listing_id} className="flex justify-between gap-3">
+                    {(o.items ?? []).map((it, i) => (
+                      <div key={`${it.listing_id ?? "x"}-${i}`} className="flex justify-between gap-3">
                         <span className="min-w-0 truncate">{it.title}</span>
                         <span className="shrink-0 tabular-nums">{eur(it.price_cents, locale)}</span>
                       </div>

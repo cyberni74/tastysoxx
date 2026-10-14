@@ -113,8 +113,9 @@ const SECTIONS: Section[] = [
     id: "speicherdauer",
     h: "9. Speicherdauer",
     ul: [
-      "Konto, Profil, Angebote, Bewertungen und Nachrichten: bis zur Löschung deines Kontos. Du kannst die Löschung jederzeit unter support@tastysoxx.com verlangen.",
-      "Bestelldaten: solange sie für die Abwicklung und mögliche Ansprüche erforderlich sind; danach nur noch, soweit gesetzliche Aufbewahrungspflichten bestehen [Fristen prüfen, z. B. nach HGB und AO].",
+      "Konto, Profil, Angebote und Nachrichten: bis zur Löschung deines Kontos. Du kannst dein Konto jederzeit selbst unter „Konto“ → „Konto löschen“ löschen (nur ohne offene Bestellungen) oder die Löschung unter support@tastysoxx.com verlangen. Dabei werden Profil, Angebote mit Fotos und alle Chats gelöscht.",
+      "Bewertungen und abgeschlossene Bestellungen: Sie bleiben nach der Löschung deines Kontos für die jeweils andere Seite erhalten (Betrag, Datum, Artikel, Bewertungstext), aber ohne Bezug zu deinem Konto. Deine Lieferadresse in Bestellungen wird bei der Löschung entfernt.",
+      "Bestelldaten ohne Personenbezug (Betrag, Datum, Artikel): solange sie für die Abwicklung, mögliche Ansprüche und gesetzliche Aufbewahrungspflichten erforderlich sind [Fristen prüfen, z. B. nach HGB und AO].",
       "Meldungen: [Dauer festlegen, z. B. 12 Monate nach Abschluss der Bearbeitung], bei Verstößen länger, soweit zur Rechtsverfolgung nötig.",
       "Nachweis der Einwilligung und der Volljährigkeitsbestätigung: mit dem Konto, danach so lange, wie wir die Einwilligung nachweisen müssen.",
       "Verifizierungsunterlagen: [Löschfrist festlegen].",
@@ -134,7 +135,7 @@ const SECTIONS: Section[] = [
     ul: [
       "Auskunft über deine gespeicherten Daten (Art. 15)",
       "Berichtigung unrichtiger Daten (Art. 16)",
-      "Löschung (Art. 17)",
+      "Löschung (Art. 17) – ganz einfach selbst über „Konto“ → „Konto löschen“",
       "Einschränkung der Verarbeitung (Art. 18)",
       "Herausgabe deiner Daten in einem gängigen Format (Art. 20)",
       "Widerspruch gegen Verarbeitungen auf Grundlage berechtigter Interessen (Art. 21)",

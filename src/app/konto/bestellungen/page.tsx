@@ -93,9 +93,11 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
               </div>
 
               <ul className="grid gap-1.5 text-sm">
-                {o.order_items.map((it) => (
-                  <li key={it.listing_id} className="flex justify-between gap-3">
-                    <Link href={`/artikel/${it.listing_id}`} className="min-w-0 truncate hover:underline">{it.title}</Link>
+                {o.order_items.map((it, i) => (
+                  <li key={`${it.listing_id ?? "x"}-${i}`} className="flex justify-between gap-3">
+                    {it.listing_id
+                      ? <Link href={`/artikel/${it.listing_id}`} className="min-w-0 truncate hover:underline">{it.title}</Link>
+                      : <span className="min-w-0 truncate">{it.title}</span>}
                     <span className="shrink-0 tabular-nums">{eur(it.price_cents, locale)}</span>
                   </li>
                 ))}
@@ -119,7 +121,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
                 )}
               </div>
 
-              {o.status === "completed" && !reviewed.has(o.id) && <ReviewForm orderId={o.id} sellerName={sellerName} />}
+              {o.status === "completed" && o.seller_id && !reviewed.has(o.id) && <ReviewForm orderId={o.id} sellerName={sellerName} />}
               {o.status === "completed" && reviewed.has(o.id) && <p className="text-sm text-muted">{t("orders.reviewed")}</p>}
             </li>
           );
