@@ -115,7 +115,7 @@ export default async function Home() {
               <Link href={d.path} className="group relative block aspect-[16/9] overflow-hidden">
                 <Image src={d.image.src} alt={tc(`deptImg.${d.id}`)} width={d.image.width} height={d.image.height} sizes="(min-width: 1180px) 380px, (min-width: 640px) 33vw, 100vw"
                   className="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
-                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 pt-10 font-display text-xl font-bold text-white">
+                <span className="absolute inset-x-0 bottom-0 bg-black/30 px-3.5 py-3 font-display text-xl font-bold text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
                   {tc(`dept.${d.id}`)}
                 </span>
               </Link>

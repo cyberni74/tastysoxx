@@ -40,7 +40,7 @@ export default async function MarktplatzPage({ searchParams }: Props) {
               <Link href={d.path} className="group relative flex h-28 items-end overflow-hidden rounded-2xl sm:h-36">
                 <Image src={d.image.src} alt={tc(`deptImg.${d.id}`)} width={d.image.width} height={d.image.height} sizes="(min-width: 1180px) 380px, (min-width: 640px) 33vw, 100vw"
                   className="absolute inset-0 size-full object-cover transition duration-300 group-hover:scale-105" />
-                <span className="relative w-full bg-gradient-to-t from-black/70 to-transparent p-3 pt-8 font-display text-lg font-bold text-white">
+                <span className="relative w-full bg-black/30 px-3.5 py-2.5 font-display text-lg font-bold text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.55)]">
                   {tc(`dept.${d.id}`)} →
                 </span>
               </Link>
